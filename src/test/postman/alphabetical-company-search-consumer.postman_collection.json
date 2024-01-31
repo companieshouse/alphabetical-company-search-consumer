@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "569821aa-8547-4397-8a5c-6e690f4f37ac",
+		"_postman_id": "2ec91bbe-833b-4f40-94d6-4e85d9357e3c",
 		"name": "alphabetical-company-search-consumer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "7646296"
@@ -23,6 +23,41 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{api_key}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
