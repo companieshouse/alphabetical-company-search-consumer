@@ -1,1 +1,1 @@
-ln -s vault-providers/userpass vault.tf
+./vault-providers/userpass
