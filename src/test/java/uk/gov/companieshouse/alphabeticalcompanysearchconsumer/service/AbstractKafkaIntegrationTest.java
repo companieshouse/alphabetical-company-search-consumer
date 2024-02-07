@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;

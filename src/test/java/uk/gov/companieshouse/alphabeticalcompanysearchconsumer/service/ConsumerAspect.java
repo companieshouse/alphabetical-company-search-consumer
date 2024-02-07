@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import java.util.concurrent.CountDownLatch;
 import org.aspectj.lang.JoinPoint;

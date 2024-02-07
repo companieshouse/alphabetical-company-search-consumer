@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -6,10 +6,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.TestUtils.ERROR_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.TestUtils.INVALID_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.TestUtils.MAIN_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.TestUtils.RETRY_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.ERROR_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.INVALID_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.MAIN_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.RETRY_TOPIC;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;

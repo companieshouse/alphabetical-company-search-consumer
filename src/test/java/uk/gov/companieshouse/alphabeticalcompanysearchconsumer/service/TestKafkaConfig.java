@@ -1,9 +1,9 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.TestUtils.ERROR_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.TestUtils.INVALID_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.TestUtils.MAIN_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.TestUtils.RETRY_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.ERROR_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.INVALID_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.MAIN_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.RETRY_TOPIC;
 
 import java.util.List;
 import java.util.Map;
