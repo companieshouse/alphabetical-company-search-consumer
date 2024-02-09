@@ -7,7 +7,11 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Te
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.INVALID_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.MAIN_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.RETRY_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
+import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -19,20 +23,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
-import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
+import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_positive")
 class ConsumerPositiveTest extends AbstractKafkaIntegrationTest {
 
     @Autowired
-    private KafkaProducer<String, String> testProducer;
+    private KafkaProducer<String, ResourceChangedData> testProducer;
     @Autowired
-    private KafkaConsumer<String, String> testConsumer;
+    private KafkaConsumer<String, ResourceChangedData> testConsumer;
     @Autowired
     private CountDownLatch latch;
 
@@ -48,7 +49,7 @@ class ConsumerPositiveTest extends AbstractKafkaIntegrationTest {
     void testConsumeFromMainTopic() throws Exception {
 
         testProducer.send(new ProducerRecord<>(MAIN_TOPIC, 0, System.currentTimeMillis(), "key",
-                "value"));
+                UPDATE));
         if (!latch.await(5L, TimeUnit.SECONDS)) {
             fail("Timed out waiting for latch");
         }
@@ -59,7 +60,7 @@ class ConsumerPositiveTest extends AbstractKafkaIntegrationTest {
         assertThat(TestUtils.noOfRecordsForTopic(consumerRecords, RETRY_TOPIC)).isZero();
         assertThat(TestUtils.noOfRecordsForTopic(consumerRecords, ERROR_TOPIC)).isZero();
         assertThat(TestUtils.noOfRecordsForTopic(consumerRecords, INVALID_TOPIC)).isZero();
-        verify(service).processMessage(new ServiceParameters("value"));
+        verify(service).processMessage(new ServiceParameters(UPDATE));
     }
 }
 

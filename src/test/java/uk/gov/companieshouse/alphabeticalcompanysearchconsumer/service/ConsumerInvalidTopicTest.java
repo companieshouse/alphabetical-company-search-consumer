@@ -6,6 +6,7 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Te
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.INVALID_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.MAIN_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.RETRY_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -20,15 +21,16 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_nonretryable")
 class ConsumerInvalidTopicTest extends AbstractKafkaIntegrationTest {
 
     @Autowired
-    private KafkaProducer<String, String> testProducer;
+    private KafkaProducer<String, ResourceChangedData> testProducer;
     @Autowired
-    private KafkaConsumer<String, String> testConsumer;
+    private KafkaConsumer<String, ResourceChangedData> testConsumer;
     @Autowired
     private CountDownLatch latch;
 
@@ -42,7 +44,7 @@ class ConsumerInvalidTopicTest extends AbstractKafkaIntegrationTest {
 
         //when
         testProducer.send(new ProducerRecord<>(MAIN_TOPIC, 0, System.currentTimeMillis(), "key",
-                "value"));
+                UPDATE));
         if (!latch.await(5L, TimeUnit.SECONDS)) {
             fail("Timed out waiting for latch");
         }

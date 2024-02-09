@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
+import uk.gov.companieshouse.stream.ResourceChangedData;
 
 /**
  * Consumes messages from the configured main Kafka topic.
@@ -46,7 +47,7 @@ public class Consumer {
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             include = RetryableException.class
     )
-    public void consume(Message<String> message) {
+    public void consume(Message<ResourceChangedData> message) {
         try {
             service.processMessage(new ServiceParameters(message.getPayload()));
         } catch (RetryableException e) {

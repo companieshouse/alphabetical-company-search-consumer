@@ -10,6 +10,7 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Te
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.INVALID_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.MAIN_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.RETRY_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -28,15 +29,16 @@ import java.util.concurrent.TimeUnit;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
+import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_retryable")
 class ConsumerRetryableExceptionTest extends AbstractKafkaIntegrationTest {
 
     @Autowired
-    private KafkaProducer<String, String> testProducer;
+    private KafkaProducer<String, ResourceChangedData> testProducer;
     @Autowired
-    private KafkaConsumer<String, String> testConsumer;
+    private KafkaConsumer<String, ResourceChangedData> testConsumer;
 
     @Autowired
     private CountDownLatch latch;
@@ -56,7 +58,7 @@ class ConsumerRetryableExceptionTest extends AbstractKafkaIntegrationTest {
 
         //when
         testProducer.send(new ProducerRecord<>(MAIN_TOPIC, 0, System.currentTimeMillis(), "key",
-                "value"));
+                UPDATE));
         if (!latch.await(5L, TimeUnit.SECONDS)) {
             fail("Timed out waiting for latch");
         }
@@ -67,6 +69,6 @@ class ConsumerRetryableExceptionTest extends AbstractKafkaIntegrationTest {
         assertThat(TestUtils.noOfRecordsForTopic(consumerRecords, RETRY_TOPIC)).isEqualTo(4);
         assertThat(TestUtils.noOfRecordsForTopic(consumerRecords, ERROR_TOPIC)).isEqualTo(1);
         assertThat(TestUtils.noOfRecordsForTopic(consumerRecords, INVALID_TOPIC)).isZero();
-        verify(service, times(5)).processMessage(new ServiceParameters("value"));
+        verify(service, times(5)).processMessage(new ServiceParameters(UPDATE));
     }
 }

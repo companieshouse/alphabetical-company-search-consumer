@@ -3,24 +3,25 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 
 import java.util.Objects;
+import uk.gov.companieshouse.stream.ResourceChangedData;
 
 /**
  * Contains all parameters required by {@link Service service implementations}.
  */
 public class ServiceParameters {
 
-    private final String data;
+    private final ResourceChangedData data;
 
-    public ServiceParameters(String data) {
+    public ServiceParameters(ResourceChangedData data) {
         this.data = data;
     }
 
     /**
      * Get data attached to the ServiceParameters object.
      *
-     * @return A string representing data that has been attached to the ServiceParameters object.
+     * @return A {@link ResourceChangedData} representing data that has been attached to the ServiceParameters object.
      */
-    public String getData() {
+    public ResourceChangedData getData() {
         return data;
     }
 
