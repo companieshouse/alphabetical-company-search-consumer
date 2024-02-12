@@ -19,7 +19,8 @@
         <spring-boot-maven-plugin.version>3.2.2</spring-boot-maven-plugin.version>
 
         <test-containers.version>1.19.4</test-containers.version>
-        <structured-logging.version>3.0.2</structured-logging.version>
+        <!-- TODO BI-13524 > 3.0.2 -->
+        <structured-logging.version>unversioned</structured-logging.version>
         <api-sdk-manager-java-library.version>3.0.4</api-sdk-manager-java-library.version>
         <private-api-sdk-java.version>4.0.40</private-api-sdk-java.version>
         <kafka-models.version>3.0.7</kafka-models.version>

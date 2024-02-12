@@ -2,6 +2,9 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils;
 
 import static java.util.Collections.emptyList;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.companieshouse.stream.EventRecord;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
@@ -9,16 +12,23 @@ public class TestConstants {
 
     private TestConstants() {}
 
-    // TODO BI-13524 Come up with a better update?
-    public static final ResourceChangedData UPDATE =
-        ResourceChangedData.newBuilder()
-            .setResourceKind("company-profile")
-            .setResourceUri("/company/00006400")
-            .setContextId("22-usZuMZEnZY6W_Kip1539964678")
-            .setResourceId("???")
-            .setData("{}")
-            .setEvent(getEvent())
-            .build();
+    public static final ResourceChangedData UPDATE;
+
+    static {
+        try {
+            UPDATE = ResourceChangedData.newBuilder()
+                .setResourceId("00006400")
+                .setResourceKind("company-profile")
+                .setResourceUri("/company/00006400")
+                .setContextId("22-usZuMZEnZY6W_Kip1539964678")
+                .setData(IOUtils.resourceToString("/fixtures/resource-changed-data-data.json",
+                    StandardCharsets.UTF_8))
+                .setEvent(getEvent())
+                .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static EventRecord getEvent() {
         return EventRecord.newBuilder()
