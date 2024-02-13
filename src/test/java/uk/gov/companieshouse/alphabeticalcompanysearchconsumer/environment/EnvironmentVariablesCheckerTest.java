@@ -8,7 +8,6 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environmen
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environment.EnvironmentVariablesChecker.RequiredEnvironmentVariables.BOOTSTRAP_SERVER_URL;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environment.EnvironmentVariablesChecker.RequiredEnvironmentVariables.CONCURRENT_LISTENER_INSTANCES;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environment.EnvironmentVariablesChecker.RequiredEnvironmentVariables.GROUP_ID;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environment.EnvironmentVariablesChecker.RequiredEnvironmentVariables.INVALID_MESSAGE_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environment.EnvironmentVariablesChecker.RequiredEnvironmentVariables.MAX_ATTEMPTS;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environment.EnvironmentVariablesChecker.RequiredEnvironmentVariables.SERVER_PORT;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environment.EnvironmentVariablesChecker.RequiredEnvironmentVariables.TOPIC;
@@ -62,13 +61,6 @@ class EnvironmentVariablesCheckerTest {
     void checkEnvironmentVariablesAllPresentReturnsFalseIfGroupIdMissing()
         throws Exception {
         populateAllVariablesExceptOneAndAssertSomethingMissing(GROUP_ID);
-    }
-
-    @DisplayName("returns false if INVALID_MESSAGE_TOPIC is missing")
-    @Test
-    void checkEnvironmentVariablesAllPresentReturnsFalseIfInvalidMessageTopicMissing()
-        throws Exception {
-        populateAllVariablesExceptOneAndAssertSomethingMissing(INVALID_MESSAGE_TOPIC);
     }
 
     @DisplayName("returns false if MAX_ATTEMPTS is missing")
