@@ -1,11 +1,10 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
-import java.util.Map;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils.getLogMap;
+
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.util.DataMap;
-import uk.gov.companieshouse.stream.EventRecord;
 
 /**
  * Service that converts the <code>stream-company-profile/code> Kafka message it receives into a
@@ -27,31 +26,11 @@ public class AlphabeticalIndexUpdaterService implements Service {
         final var resourceId = message.getResourceId();
         final var resourceKind = message.getResourceKind();
         final var resourceUri = message.getResourceUri();
-        final var contextId = message.getContextId();
-        final var event = message.getEvent();
-        final var data = message.getData();
 
         logger.info("Processing message " + message + " for resource ID " + resourceId +
             ", resource kind " + resourceKind + ", resource URI " + resourceUri + ".",
-            getLogMap(resourceId, resourceKind, resourceUri, contextId, event, data));
+            getLogMap(message));
 
     }
 
-    private Map<String, Object> getLogMap(
-        final String resourceId,
-        final String resourceKind,
-        final String resourceUri,
-        final String contextId,
-        final EventRecord event,
-        final String data) {
-        return new DataMap.Builder()
-            .resourceId(resourceId)
-            .resourceKind(resourceKind)
-            .resourceUri(resourceUri)
-            .contextId(contextId)
-            .eventRecord(event.toString())
-            .data(data)
-            .build()
-            .getLogMap();
-    }
 }
