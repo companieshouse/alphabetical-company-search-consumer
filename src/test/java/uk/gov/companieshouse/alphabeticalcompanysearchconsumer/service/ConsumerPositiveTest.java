@@ -3,10 +3,10 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.verify;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.ERROR_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.INVALID_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.MAIN_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.RETRY_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.ERROR_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.INVALID_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.MAIN_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.RETRY_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
 import java.time.Duration;
@@ -24,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest

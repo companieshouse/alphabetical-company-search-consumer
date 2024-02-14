@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;

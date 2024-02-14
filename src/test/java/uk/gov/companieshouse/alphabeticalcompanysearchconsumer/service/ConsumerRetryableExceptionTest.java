@@ -6,10 +6,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.ERROR_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.INVALID_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.MAIN_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.RETRY_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.ERROR_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.INVALID_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.MAIN_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.RETRY_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -26,9 +26,9 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest

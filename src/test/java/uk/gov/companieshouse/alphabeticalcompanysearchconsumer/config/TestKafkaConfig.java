@@ -1,9 +1,9 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config;
 
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.ERROR_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.INVALID_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.MAIN_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.TestUtils.RETRY_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.ERROR_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.INVALID_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.MAIN_TOPIC;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.RETRY_TOPIC;
 
 import consumer.deserialization.AvroDeserializer;
 import java.util.List;
@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.NonRetryableExceptionService;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.serialization.SerializerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;

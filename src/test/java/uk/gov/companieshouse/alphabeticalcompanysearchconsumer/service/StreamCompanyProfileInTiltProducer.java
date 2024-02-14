@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.AlphabeticalCompanySearchConsumerApplication;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestKafkaConfig;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
