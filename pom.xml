@@ -238,7 +238,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <skipTests>${skip.unit.tests}</skipTests>
+                    <skipTests>${skipTests}</skipTests>
                     <excludes>
                         <exclude>**/Runner.java</exclude>
                     </excludes>
