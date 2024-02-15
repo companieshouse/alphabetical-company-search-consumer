@@ -21,8 +21,8 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 /**
- * "Test" class re-purposed to produce Item Group Processed messages to the
- * <code>company-stream-profile/code> topic in Tilt. This is NOT to be run as part of an automated
+ * "Test" class re-purposed to produce {@link ResourceChangedData} messages to the
+ * <code>company-stream-profile</code> topic in Tilt. This is NOT to be run as part of an automated
  * test suite. It is for manual testing only.
  */
 @SpringBootTest(classes = AlphabeticalCompanySearchConsumerApplication.class,
