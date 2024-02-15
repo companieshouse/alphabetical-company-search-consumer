@@ -45,10 +45,12 @@ public class InvalidMessageRouter implements ProducerInterceptor<String, Resourc
 
     @Override
     public void onAcknowledgement(RecordMetadata metadata, Exception exception) {
+        // No specific implementation is required in this case.
     }
 
     @Override
     public void close() {
+        // No specific implementation is required in this case.
     }
 
     @Override

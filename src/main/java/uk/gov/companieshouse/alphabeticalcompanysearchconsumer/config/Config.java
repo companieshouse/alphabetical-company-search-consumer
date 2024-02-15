@@ -5,6 +5,7 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Alphabetic
 import consumer.deserialization.AvroDeserializer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -40,7 +41,7 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
 public class Config {
 
     @Bean
-    public ConcurrentHashMap<ServiceResultStatus, ResponseEntityFactory> responseEntityFactoryMap() {
+    public ConcurrentMap<ServiceResultStatus, ResponseEntityFactory> responseEntityFactoryMap() {
         return new ConcurrentHashMap<>();
     }
 
