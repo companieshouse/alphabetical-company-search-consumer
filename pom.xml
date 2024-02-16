@@ -35,6 +35,10 @@
         <!-- Docker -->
         <jib-maven-plugin.version>3.4.0</jib-maven-plugin.version>
 
+        <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+
     </properties>
 
     <dependencyManagement>
@@ -289,6 +293,12 @@
               <groupId>org.sonarsource.scanner.maven</groupId>
               <artifactId>sonar-maven-plugin</artifactId>
               <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <!-- needed adding to use Maven Junit test groups correct -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
