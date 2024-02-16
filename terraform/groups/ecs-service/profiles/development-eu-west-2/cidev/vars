@@ -3,4 +3,14 @@ aws_profile = "development-eu-west-2"
 
 # service configs
 log_level = "debug"
+human_log = "1"
+
+backoff_delay = "30000"
+bootstrap_server_url = "kafka-streaming-broker1-cidev.development.aws.internal:9092"
+concurrent_listener_instances = "1"
+group_id = "alphabetical-company-search-consumer-group"
+max_attempts = "4"
+server_port = "8080"
+topic = "stream-company-profile"
+
 use_set_environment_files = true
