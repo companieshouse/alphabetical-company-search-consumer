@@ -1,13 +1,19 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer;
 
-import org.springframework.boot.SpringApplication;
+import static org.springframework.boot.SpringApplication.run;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.environment.EnvironmentVariablesChecker.allRequiredEnvironmentVariablesPresent;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class AlphabeticalCompanySearchConsumerApplication {
 
+    public static final String NAMESPACE = "alphabetical-company-search-consumer";
+
     public static void main(String[] args) {
-        SpringApplication.run(AlphabeticalCompanySearchConsumerApplication.class, args);
+        if (allRequiredEnvironmentVariablesPresent()) {
+            run(AlphabeticalCompanySearchConsumerApplication.class, args);
+        }
     }
 
 }
