@@ -24,6 +24,7 @@ locals {
 
   parameter_store_secrets = {
       "bootstrap_server_url" = local.service_secrets["bootstrap_server_url"]
+      "vpc_name"             = local.service_secrets["vpc_name"]
     }
 
   # create a map of secret name => secret arn to pass into ecs service module
