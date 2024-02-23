@@ -28,6 +28,7 @@ variable "backoff_delay" {
   description = "The delay in milliseconds between message republish attempts."
 }
 variable "bootstrap_server_url" {
+  default   = ""
   type      = string
   description = "The URLs of the Kafka brokers that the consumers will connect to."
 }
