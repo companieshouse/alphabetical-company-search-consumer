@@ -20,7 +20,7 @@ locals {
   stack_secrets   = jsondecode(data.vault_generic_secret.stack_secrets.data_json)
   service_secrets = jsondecode(data.vault_generic_secret.service_secrets.data_json)
 
-  parameter_store_secrets = {
+  service_vault_secrets = {
       "bootstrap_server_url" = local.service_secrets["bootstrap_server_url"]
       "vpc_name"             = local.service_secrets["vpc_name"]
   }

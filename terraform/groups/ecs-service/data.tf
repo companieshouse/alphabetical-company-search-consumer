@@ -13,7 +13,7 @@ data "vault_generic_secret" "service_secrets" {
 data "aws_vpc" "vpc" {
   filter {
     name   = "tag:Name"
-    values = [local.parameter_store_secrets.vpc_name]
+    values = [local.service_vault_secrets.vpc_name]
   }
 }
 
