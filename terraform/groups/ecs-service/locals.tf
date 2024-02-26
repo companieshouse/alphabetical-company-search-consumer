@@ -7,14 +7,14 @@ locals {
   container_port             = 8080
   docker_repo                = "alphabetical-company-search-consumer"
   kms_alias                  = "alias/${var.aws_profile}/environment-services-kms"
-  lb_listener_rule_priority  = 21
-  lb_listener_paths          = []
   s3_config_bucket           = data.vault_generic_secret.shared_s3.data["config_bucket_name"]
   app_environment_filename   = "alphabetical-company-search-consumer.env"
   use_set_environment_files  = var.use_set_environment_files
   application_subnet_ids     = data.aws_subnets.application.ids
   application_subnet_pattern = local.stack_secrets["application_subnet_pattern"]
-  healthcheck_path           = "/healthcheck" #healthcheck path for alphabetical-company-search-consumer service
+  lb_listener_rule_priority  = 21
+  lb_listener_paths          = ["/alphabetical-company-search-consumer/*"]
+  healthcheck_path           = "/alphabetical-company-search-consumer/healthcheck" #healthcheck path for alphabetical-company-search-consumer service
   healthcheck_matcher        = "200"
 
   stack_secrets   = jsondecode(data.vault_generic_secret.stack_secrets.data_json)
