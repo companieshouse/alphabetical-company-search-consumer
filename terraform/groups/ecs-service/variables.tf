@@ -152,7 +152,7 @@ variable "use_set_environment_files" {
 
 variable "alphabetical_company_search_consumer_version" {
   type        = string
-  description = "The version of the alphabetical-company-search-consumer-version container to run."
+  description = "The version of the alphabetical-company-search-consumer container to run."
 }
 
 variable "log_level" {
