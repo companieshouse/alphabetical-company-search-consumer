@@ -39,15 +39,7 @@ module "ecs-service" {
   task_execution_role_arn = data.aws_iam_role.ecs_cluster_iam_role.arn
 
   # Load balancer configuration
-  lb_listener_arn           = data.aws_lb_listener.service_lb_listener.arn
-  lb_listener_rule_priority = local.lb_listener_rule_priority
-  lb_listener_paths         = local.lb_listener_paths
-  multilb_listeners               = {
-    "priv-api-lb": {
-      listener_arn           = data.aws_lb_listener.secondary_lb_listener.arn,
-      load_balancer_arn      = data.aws_lb.secondary_lb.arn
-    }
-  }
+  batch_service = true # no ALB attachment required for consumer app
 
   # ECS Task container health check
   use_task_container_healthcheck = true
@@ -55,6 +47,12 @@ module "ecs-service" {
   healthcheck_matcher            = local.healthcheck_matcher
   health_check_grace_period_seconds = 240
   healthcheck_healthy_threshold     = "2"
+
+  # Disable cloudwatch alarms that are dependant on loadbalancer
+  cloudwatch_unhealthy_host_count_enabled = false
+  cloudwatch_healthy_host_count_enabled   = false
+  cloudwatch_response_time_enabled        = false
+  cloudwatch_http_5xx_error_count_enabled = false
 
   # Docker container details
   docker_registry   = var.docker_registry
