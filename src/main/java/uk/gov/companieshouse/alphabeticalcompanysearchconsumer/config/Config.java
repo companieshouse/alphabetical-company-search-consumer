@@ -23,6 +23,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import org.springframework.web.client.RestTemplate;
+
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.InvalidMessageRouter;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
@@ -39,6 +41,11 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
 @Configuration
 @EnableKafka
 public class Config {
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
     @Bean
     public ConcurrentMap<ServiceResultStatus, ResponseEntityFactory> responseEntityFactoryMap() {
