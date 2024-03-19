@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
+import java.util.Map;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
@@ -8,6 +10,7 @@ import org.springframework.messaging.Message;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 import uk.gov.companieshouse.stream.ResourceChangedData;
@@ -49,6 +52,8 @@ public class Consumer {
     )
     public void consume(Message<ResourceChangedData> message) {
         try {
+            ServiceParameters serviceParameters = new ServiceParameters(message.getPayload());
+            Map<String, Object> logMap = LoggingUtils.getLogMap(message.getPayload());
             service.processMessage(new ServiceParameters(message.getPayload()));
         } catch (RetryableException e) {
             messageFlags.setRetryable(true);
