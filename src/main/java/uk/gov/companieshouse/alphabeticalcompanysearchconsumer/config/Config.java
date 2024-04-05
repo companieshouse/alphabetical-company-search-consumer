@@ -51,8 +51,8 @@ import java.util.function.Supplier;
 @EnableKafka
 public class Config {
 
-    @Value("${api.api-url}")
-    private String apiUrl;
+    // @Value("${api.api-url}")
+    // private String apiUrl;
 
     @Bean
     public SearchApiClient searchApiClient(Supplier<InternalApiClient> internalApiClientFactory,
