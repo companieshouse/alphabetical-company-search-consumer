@@ -18,11 +18,11 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
 @Component
 public class Consumer {
 
-    private final Service service;
+    private final UpsertService upsertService;
     private final MessageFlags messageFlags;
 
-    public Consumer(Service service, MessageFlags messageFlags) {
-        this.service = service;
+    public Consumer(UpsertService upsertService, MessageFlags messageFlags) {
+        this.upsertService = upsertService;
         this.messageFlags = messageFlags;
     }
 
@@ -47,9 +47,11 @@ public class Consumer {
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             include = RetryableException.class
     )
-    public void consume(Message<ResourceChangedData> message) {
+    public void consume(Message<ServiceParameters> message) {
         try {
-            service.processMessage(new ServiceParameters(message.getPayload()));
+            ServiceParameters parameters = message.getPayload();
+            ResourceChangedData resourceChangedData = parameters.getData();
+            upsertService.upsertMessageContent(resourceChangedData);
         } catch (RetryableException e) {
             messageFlags.setRetryable(true);
             throw e;
