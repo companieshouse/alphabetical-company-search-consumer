@@ -2,8 +2,11 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import java.util.function.Supplier;
 
-import org.springframework.beans.factory.annotation.Value;
+// import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
@@ -14,8 +17,8 @@ import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.DataMapHo
 @Component
 public class SearchApiClient {
 
-    @Value("${api.api-url}")
-    private String apiUrl;
+    // @Value("${api.api-url}")
+    // private String apiUrl;
 
     // private final String apiUrl;
     private static final String PUT_COMPANY_PROFILE_FAILED_MSG = "Failed in PUT company profile list to resource URI %s";
@@ -31,19 +34,23 @@ public class SearchApiClient {
     }
 
     public void upsertCompanyProfile(String companyNumber, CompanyProfileApi companyProfileApi) {
-        String resourceUri = apiUrl + String.format("/alphabetical-search/companies/%s", companyNumber);
+        String resourceUri = String.format("/alphabetical-search/companies/%s", companyNumber);
         System.out.println("resourceuri is " + resourceUri);
         System.out.println("company number is " + companyProfileApi.getCompanyNumber());
         InternalApiClient apiClient = internalApiClientFactory.get();
         apiClient.getHttpClient().setRequestId(DataMapHolder.getRequestId());
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+        String data = objectMapper.writeValueAsString(companyProfileApi);
+        // Deserialize JSON string back into an object
+        CompanyProfileApi deserializedCompanyProfileApi = objectMapper.readValue(data, CompanyProfileApi.class);
             apiClient.privateSearchResourceHandler()
                     .alphabeticalCompanySearch()
-                    .put(resourceUri, companyProfileApi)
+                    .put(resourceUri, deserializedCompanyProfileApi)
                     .execute();
             System.out.println("its been executed");        
         } catch (ApiErrorResponseException ex) {
-            System.out.println("1111111 " + ex.getMessage());        
+            System.out.println("1111111 " + ex.getMessage() + DataMapHolder.getRequestId());        
             responseHandler.handle(
                     String.format(PUT_COMPANY_PROFILE_ERROR_MSG, ex.getStatusCode(), resourceUri), ex);
         } catch (IllegalArgumentException ex) {
@@ -52,7 +59,9 @@ public class SearchApiClient {
         } catch (URIValidationException ex) {
             System.out.println("333333 " + ex.getMessage());        
             responseHandler.handle(String.format(PUT_COMPANY_PROFILE_FAILED_MSG, resourceUri), ex);
-        }
+        } catch (JsonProcessingException ex) {
+        System.out.println("Error converting CompanyProfileApi to JSON: " + ex.getMessage());
+    }
     }
 
 
