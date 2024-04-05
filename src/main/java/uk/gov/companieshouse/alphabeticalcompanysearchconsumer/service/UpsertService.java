@@ -1,71 +1,77 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.UpsertServiceException;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-public class UpsertService {
+@Component
+public class UpsertService implements Service {
 
-    private final String upsertUrl;
-    private final RestTemplate restTemplate;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UpsertService.class);
 
-    public UpsertService(String upsertUrl, RestTemplate restTemplate) {
-        this.upsertUrl = upsertUrl;
-        this.restTemplate = new RestTemplate();
+    // private final String apiUrl;
+    // private final String apiKey;
+    private final SearchApiClient searchApiClient;
+
+
+    public UpsertService(SearchApiClient searchApiClient) {
+        // this.apiUrl = apiUrl;
+        // this.apiKey = apiKey;
+        this.searchApiClient = searchApiClient;
     }
 
-   public ResponseEntity<Object> upsertMessageContent(ResourceChangedData messageContent) throws UpsertServiceException {
-    try {
-        // Extract necessary data from messageContent and create a CompanyProfileApi object
-        CompanyProfileApi companyProfile = createCompanyProfileFromMessage(messageContent);
-        
-        // Extract company number from the created CompanyProfileApi object
-        String companyNumber = companyProfile.getCompanyNumber();
+    @Override
+    public void processMessage(ServiceParameters parameters) {
+        ResourceChangedData messageContent = parameters.getData();
+        try {
+            upsertMessageContent(messageContent);
+            System.out.println("message processed");
+            LOGGER.info("Successfully processed message: {}", messageContent);
+        } catch (UpsertServiceException e) {
+            LOGGER.error("Error occurred while processing message: {}", messageContent, e);
+        }
+    }
 
-        // Construct the URL for the upsert endpoint
-        String url = upsertUrl + "/companies/" + companyNumber;
-        
-        // Send the PUT request to the upsert endpoint with the companyProfile as the request body
-        restTemplate.put(url, companyProfile);
-        
-        // Assuming successful execution, return an empty ResponseEntity with 200 OK status
-        return ResponseEntity.ok().build();
+    public void upsertMessageContent(ResourceChangedData messageContent) throws UpsertServiceException {
+        try {
+            CompanyProfileApi companyProfileApi = createCompanyProfileFromMessage(messageContent);
+            String number = companyProfileApi.getCompanyNumber();
+            String companyNumber = URLEncoder.encode(number, StandardCharsets.UTF_8);
+            System.out.println("companyprofile is " + companyProfileApi);
+            System.out.println("I got here UpsertMessage");
+
+            searchApiClient.upsertCompanyProfile(companyNumber, companyProfileApi);
+            System.out.println("upsert successful");
+            LOGGER.info("Successfully upserted message content for company: {}", companyNumber);
         } catch (Exception e) {
+            LOGGER.error("Error occurred while upserting message content", e);
             throw new UpsertServiceException("Error occurred while upserting message content", e);
         }
     }
 
-    public CompanyProfileApi createCompanyProfileFromMessage(ResourceChangedData messageContent) {
-        
-        // Extract necessary data from messageContent and create a CompanyProfileApi object
+    private CompanyProfileApi createCompanyProfileFromMessage(ResourceChangedData messageContent) {
         CompanyProfileApi companyProfile = new CompanyProfileApi();
-
         try {
-            // Step 1: Parse the JSON data within the "data" field
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(messageContent.getData());
-            
-            // Step 2: Extract company_name and company_number
-            String companyName = rootNode.get("company_name").asText();
+            String companyName = rootNode.get("company_name").toString();
             String companyNumber = rootNode.get("company_number").asText();
-            
-            // Step 3: Set the company number and company name in the CompanyProfileApi object
             companyProfile.setCompanyNumber(companyNumber);
             companyProfile.setCompanyName(companyName);
-
-            // You can map other properties similarly
-            
+            System.out.println("companyProfile created");
         } catch (Exception e) {
-            e.printStackTrace();
-            // Handle exception accordingly
+            LOGGER.error("Error occurred while creating company profile from message content", e);
         }
-
         return companyProfile;
     }
-    
 }
