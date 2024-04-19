@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
-import uk.gov.companieshouse.stream.ResourceChangedData;
+import uk.gov.companieshouse.api.error.ApiErrorResponseException;
+import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 
 /**
  * Consumes messages from the configured main Kafka topic.
@@ -47,14 +48,17 @@ public class Consumer {
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             include = RetryableException.class
     )
-    public void consume(Message<ServiceParameters> message) {
+    public void consume(Message<ServiceParameters> message) throws ApiErrorResponseException, URIValidationException {
         try {
             ServiceParameters parameters = message.getPayload();
-            ResourceChangedData resourceChangedData = parameters.getData();
-            upsertService.upsertMessageContent(resourceChangedData);
+            // ResourceChangedData resourceChangedData = parameters.getData();
+            System.out.println("message consuming");
+            upsertService.upsertService(parameters);
+            System.out.println("message consumed");
         } catch (RetryableException e) {
+            // Handle RetryableException
             messageFlags.setRetryable(true);
-            throw e;
+            throw e; // Re-throw RetryableException after handling other exceptions
         }
     }
 }

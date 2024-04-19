@@ -1,77 +1,53 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
-import uk.gov.companieshouse.stream.ResourceChangedData;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.UpsertServiceException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import uk.gov.companieshouse.api.error.ApiErrorResponseException;
+import uk.gov.companieshouse.api.handler.exception.URIValidationException;
+import uk.gov.companieshouse.api.model.ApiResponse;
+import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ApiClientUtils.mapMessageToRequest;
+import uk.gov.companieshouse.logging.Logger;
 
 @Component
-public class UpsertService implements Service {
+public class UpsertService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UpsertService.class);
+    private final ApiClientService apiClientService;
 
-    // private final String apiUrl;
-    // private final String apiKey;
-    private final SearchApiClient searchApiClient;
+    private final Logger logger;
 
-
-    public UpsertService(SearchApiClient searchApiClient) {
-        // this.apiUrl = apiUrl;
-        // this.apiKey = apiKey;
-        this.searchApiClient = searchApiClient;
+    public UpsertService(ApiClientService apiClientService, Logger logger) {
+        this.apiClientService = apiClientService;
+        this.logger = logger;
     }
 
-    @Override
-    public void processMessage(ServiceParameters parameters) {
-        ResourceChangedData messageContent = parameters.getData();
-        try {
-            upsertMessageContent(messageContent);
-            System.out.println("message processed");
-            LOGGER.info("Successfully processed message: {}", messageContent);
-        } catch (UpsertServiceException e) {
-            LOGGER.error("Error occurred while processing message: {}", messageContent, e);
-        }
-    }
+    public ApiResponse<Void> upsertService(ServiceParameters parameters)
+            throws URIValidationException, URIValidationException, ApiErrorResponseException {
+        String companyNumber = parameters.getData().getResourceId();
+        String companyResourceUri = parameters.getData().getResourceUri();
+        String resourceUri = String.format("/alphabetical-search/companies/%s", companyNumber);
+        CompanyProfileApi companyProfileApi = mapMessageToRequest(parameters);
+        logger.info("Upserting company profile. Company number: " + companyNumber + ", Resource URI: "
+                + companyResourceUri);
 
-    public void upsertMessageContent(ResourceChangedData messageContent) throws UpsertServiceException {
         try {
-            CompanyProfileApi companyProfileApi = createCompanyProfileFromMessage(messageContent);
-            String number = companyProfileApi.getCompanyNumber();
-            String companyNumber = URLEncoder.encode(number, StandardCharsets.UTF_8);
-            System.out.println("companyprofile is " + companyProfileApi);
-            System.out.println("I got here UpsertMessage");
+            ApiResponse<Void> response = apiClientService
+                    .getInternalApiClient()
+                    .privateSearchResourceHandler()
+                    .alphabeticalCompanySearch()
+                    .put(resourceUri, companyProfileApi)
+                    .execute();
+            System.out.println("execute successful");
 
-            searchApiClient.upsertCompanyProfile(companyNumber, companyProfileApi);
-            System.out.println("upsert successful");
-            LOGGER.info("Successfully upserted message content for company: {}", companyNumber);
-        } catch (Exception e) {
-            LOGGER.error("Error occurred while upserting message content", e);
-            throw new UpsertServiceException("Error occurred while upserting message content", e);
-        }
-    }
+            logger.info("Upsert request successful. API response status code: " + response.getStatusCode());
+            logger.info("API returned response: " + response.getStatusCode());
 
-    private CompanyProfileApi createCompanyProfileFromMessage(ResourceChangedData messageContent) {
-        CompanyProfileApi companyProfile = new CompanyProfileApi();
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(messageContent.getData());
-            String companyName = rootNode.get("company_name").toString();
-            String companyNumber = rootNode.get("company_number").asText();
-            companyProfile.setCompanyNumber(companyNumber);
-            companyProfile.setCompanyName(companyName);
-            System.out.println("companyProfile created");
-        } catch (Exception e) {
-            LOGGER.error("Error occurred while creating company profile from message content", e);
+            return response;
+        } catch (ApiErrorResponseException e) {
+            // Log error message and throw it again
+            logger.error("Error occurred during upsert request. Company number: " + companyNumber + ", Resource URI: "
+                    + companyResourceUri, e);
+            throw e;
         }
-        return companyProfile;
     }
 }
