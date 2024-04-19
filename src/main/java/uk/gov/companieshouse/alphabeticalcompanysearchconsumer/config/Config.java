@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config;
 
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.AlphabeticalCompanySearchConsumerApplication.NAMESPACE;
-
 import consumer.deserialization.AvroDeserializer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,16 +25,11 @@ import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.InvalidMessageRouter;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.ResponseHandler;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.SearchApiClient;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.UpsertService;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.http.ApiKeyHttpClient;
-// import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
 import uk.gov.companieshouse.kafka.serialization.SerializerFactory;
@@ -50,20 +44,6 @@ import java.util.function.Supplier;
 @Configuration
 @EnableKafka
 public class Config {
-
-    // @Value("${api.api-url}")
-    // private String apiUrl;
-
-    @Bean
-    public SearchApiClient searchApiClient(Supplier<InternalApiClient> internalApiClientFactory,
-    ResponseHandler responseHandler) {
-        return new SearchApiClient(internalApiClientFactory, responseHandler);
-    }
-
-    @Bean
-    public UpsertService upsertService(SearchApiClient searchApiClient) {
-        return new UpsertService(searchApiClient);
-    }
 
      @Bean
     public ObjectMapper objectMapper() {
