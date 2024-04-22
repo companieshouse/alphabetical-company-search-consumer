@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
-import uk.gov.companieshouse.api.error.ApiErrorResponseException;
-import uk.gov.companieshouse.api.handler.exception.URIValidationException;
+import uk.gov.companieshouse.stream.ResourceChangedData;
 
 /**
  * Consumes messages from the configured main Kafka topic.
@@ -19,11 +18,11 @@ import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 @Component
 public class Consumer {
 
-    private final UpsertService upsertService;
+    private final Service service;
     private final MessageFlags messageFlags;
 
-    public Consumer(UpsertService upsertService, MessageFlags messageFlags) {
-        this.upsertService = upsertService;
+    public Consumer(Service service, MessageFlags messageFlags) {
+        this.service = service;
         this.messageFlags = messageFlags;
     }
 
@@ -48,17 +47,13 @@ public class Consumer {
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             include = RetryableException.class
     )
-    public void consume(Message<ServiceParameters> message) throws ApiErrorResponseException, URIValidationException {
+
+    public void consume(Message<ResourceChangedData> message) {
         try {
-            ServiceParameters parameters = message.getPayload();
-            // ResourceChangedData resourceChangedData = parameters.getData();
-            System.out.println("message consuming");
-            upsertService.upsertService(parameters);
-            System.out.println("message consumed");
+            service.processMessage(new ServiceParameters(message.getPayload()));
         } catch (RetryableException e) {
-            // Handle RetryableException
             messageFlags.setRetryable(true);
-            throw e; // Re-throw RetryableException after handling other exceptions
+            throw e;
         }
     }
 }

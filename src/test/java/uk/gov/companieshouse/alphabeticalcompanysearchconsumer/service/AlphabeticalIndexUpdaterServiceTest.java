@@ -30,6 +30,9 @@ class AlphabeticalIndexUpdaterServiceTest {
     @Mock
     private ServiceParameters serviceParameters;
 
+    @Mock
+    private UpsertService upsertService;
+
     @Test
     @DisplayName("processMessage() logs message clearly")
     void processMessageLogsMessageClearly() throws IOException {
@@ -44,7 +47,5 @@ class AlphabeticalIndexUpdaterServiceTest {
         final var expectedLogMessage = resourceToString("/fixtures/expected-log-message.txt",
             StandardCharsets.UTF_8);
         verify(logger).info(eq(expectedLogMessage), anyMap());
-
     }
-
 }

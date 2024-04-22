@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpHeaders;
 
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
@@ -21,15 +22,11 @@ import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.stream.ResourceChangedData;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ApiClientUtils.mapMessageToRequest;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
 
 import java.util.Map;
 import java.util.function.Supplier;
-
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -97,7 +94,8 @@ class UpsertServiceTest {
 }
 
 @Test
-    @DisplayName("Should delegate to response handler when ApiErrorResponseException (503) caught during upsert")
+
+@DisplayName("Should delegate to response handler when ApiErrorResponseException (503) caught during upsert")
     void upsertService_ApiErrorResponseException()
             throws Exception {
         // given
@@ -120,6 +118,6 @@ class UpsertServiceTest {
             eq("/alphabetical-search/companies/" + companyNumber), any(CompanyProfileApi.class));
 
             verifyNoInteractions(responseHandler);     
+        }
     }
-}
 }

@@ -1,15 +1,10 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils.getLogMap;
-import static com.fasterxml.jackson.databind.util.ClassUtil.getRootCause;
-
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
-import uk.gov.companieshouse.api.error.ApiErrorResponseException;
-import uk.gov.companieshouse.api.handler.exception.URIValidationException;
-import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.logging.Logger;
 
 /**
@@ -40,20 +35,18 @@ public class AlphabeticalIndexUpdaterService implements Service {
             getLogMap(message));
 
             try {
-                final ApiResponse<Void> upsertAlphabeticalResponse = upsertService.upsertService(parameters);
-                logger.info("API returned response: " + upsertAlphabeticalResponse.getStatusCode());
-            } catch (ApiErrorResponseException apiException) {
-                logger.error("Error response from INTERNAL API: " + apiException);
-                throw new RetryableException("Attempting retry due to failed response", apiException);
-            } catch (URIValidationException uriException) {
-                logger.error("Error with URI: " + uriException);
-                throw new RetryableException("Attempting retry due to URI validation error", uriException);
+                upsertService.upsertService(parameters);
+            } catch (RetryableException apiException) {
+                logger.error("Attempting retry due to failed response", apiException);
+                throw apiException; // Let it propagate as it's already a RetryableException
+            } catch (NonRetryableException uriException) {
+                logger.error("NonRetryable Error: " + uriException);
+                throw uriException; // Let it propagate as it's already a NonRetryableException
             } catch (Exception exception) {
-                final var rootCause = getRootCause(exception);
-                logger.error("NonRetryable Error: " + rootCause);
-                throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: ", rootCause);
-            }    
-
+                logger.error("Unknown error occurred: " + exception.getMessage(), exception);
+                throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: Unknown error", exception);
+            }
     }
 
 }
+
