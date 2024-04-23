@@ -94,7 +94,6 @@ class UpsertServiceTest {
 }
 
 @Test
-
 @DisplayName("Should delegate to response handler when ApiErrorResponseException (503) caught during upsert")
     void upsertService_ApiErrorResponseException()
             throws Exception {
