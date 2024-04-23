@@ -28,8 +28,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.InvalidMessageRouter;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
-import uk.gov.companieshouse.api.InternalApiClient;
-import uk.gov.companieshouse.api.http.ApiKeyHttpClient;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
 import uk.gov.companieshouse.kafka.serialization.SerializerFactory;
@@ -39,7 +37,6 @@ import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.service.ServiceResultStatus;
 import uk.gov.companieshouse.service.rest.response.ResponseEntityFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
-import java.util.function.Supplier;
 
 @Configuration
 @EnableKafka
@@ -135,18 +132,6 @@ public class Config {
     @Bean
     Logger getLogger() {
         return LoggerFactory.getLogger(NAMESPACE);
-    }
-
-    @Bean
-    Supplier<InternalApiClient> internalApiClientSupplier(
-            @Value("${api.api-key}") String apiKey,
-            @Value("${api.api-url}") String apiUrl) {
-        return () -> {
-            InternalApiClient internalApiClient = new InternalApiClient(new ApiKeyHttpClient(
-                    apiKey));
-            internalApiClient.setBasePath(apiUrl);
-            return internalApiClient;
-        };
     }
 }
 

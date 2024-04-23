@@ -2,6 +2,7 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging;
 
 import java.util.Map;
 import uk.gov.companieshouse.logging.util.DataMap;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 public class LoggingUtils {
@@ -26,5 +27,10 @@ public class LoggingUtils {
             .data(data)
             .build()
             .getLogMap();
+    }
+
+    public static  Throwable getRootCause(final Exception exception) {
+        final var rootCause = ExceptionUtils.getRootCause(exception);
+        return rootCause != null ? rootCause : exception;
     }
 }

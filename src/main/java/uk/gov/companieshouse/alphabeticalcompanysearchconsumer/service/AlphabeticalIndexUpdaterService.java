@@ -1,10 +1,12 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils.getLogMap;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils.getRootCause;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
+import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.logging.Logger;
 
 /**
@@ -35,18 +37,24 @@ public class AlphabeticalIndexUpdaterService implements Service {
             getLogMap(message));
 
             try {
-                upsertService.upsertService(parameters);
-            } catch (RetryableException apiException) {
-                logger.error("Attempting retry due to failed response", apiException);
-                throw apiException; // Let it propagate as it's already a RetryableException
-            } catch (NonRetryableException uriException) {
-                logger.error("NonRetryable Error: " + uriException);
-                throw uriException; // Let it propagate as it's already a NonRetryableException
+                var messageType = message.getEvent().getType();
+                message.getResourceId();
+                switch (messageType) {
+                    case "changed":
+                    logger.debug("This is a 'changed' type message.");
+                    upsertService.upsertService(parameters);
+                    break;
+                    default:
+            logger.error(String.format("NonRetryable error occurred, unknown message type of %s", messageType));
+            throw new IllegalArgumentException("AlphabeticalIndexUpdaterService unknown message type.");      
+                }
+            } catch (ApiErrorResponseException apiException) {
+                logger.error(String.format("Error response from INTERNAL API: %s", apiException));
+                throw new RetryableException("Attempting to retry due to failed API response", apiException); // Let it propagate as it's already a RetryableException
             } catch (Exception exception) {
+                final var rootCause = getRootCause(exception);
                 logger.error("Unknown error occurred: " + exception.getMessage(), exception);
-                throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: Unknown error", exception);
+                throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: ", rootCause);
             }
     }
-
 }
-
