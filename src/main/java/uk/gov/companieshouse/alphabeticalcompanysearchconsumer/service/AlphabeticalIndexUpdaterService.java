@@ -41,9 +41,9 @@ public class AlphabeticalIndexUpdaterService implements Service {
                 message.getResourceId();
                 switch (messageType) {
                     case "changed":
-                    logger.debug("This is a 'changed' type message.");
-                    upsertService.upsertService(parameters);
-                    break;
+                        logger.debug("This is a 'changed' type message.");
+                        upsertService.upsertService(parameters);
+                        break;
                     default:
             logger.error(String.format("NonRetryable error occurred, unknown message type of %s", messageType));
             throw new IllegalArgumentException("AlphabeticalIndexUpdaterService unknown message type.");      
