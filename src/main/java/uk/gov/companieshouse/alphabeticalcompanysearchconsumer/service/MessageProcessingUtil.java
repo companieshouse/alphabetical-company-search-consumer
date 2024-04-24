@@ -14,12 +14,12 @@ import uk.gov.companieshouse.logging.Logger;
  * REST request it dispatches to update the ElasticSearch alphabetical company search index.
  */
 @Component
-public class AlphabeticalIndexUpdaterService implements Service {
+public class MessageProcessingUtil implements Service {
 
     private final Logger logger;
     private final UpsertService upsertService;
 
-    public AlphabeticalIndexUpdaterService(Logger logger, UpsertService upsertService) {
+    public MessageProcessingUtil(Logger logger, UpsertService upsertService) {
         this.logger = logger;
         this.upsertService = upsertService;
     }
@@ -46,7 +46,7 @@ public class AlphabeticalIndexUpdaterService implements Service {
                         break;
                     default:
             logger.error(String.format("NonRetryable error occurred, unknown message type of %s", messageType));
-            throw new IllegalArgumentException("AlphabeticalIndexUpdaterService unknown message type.");      
+            throw new IllegalArgumentException("MessageProcessingUtil unknown message type.");      
                 }
             } catch (ApiErrorResponseException apiException) {
                 logger.error(String.format("Error response from INTERNAL API: %s", apiException));
@@ -54,7 +54,7 @@ public class AlphabeticalIndexUpdaterService implements Service {
             } catch (Exception exception) {
                 final var rootCause = getRootCause(exception);
                 logger.error("Unknown error occurred: " + exception.getMessage(), exception);
-                throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: ", rootCause);
+                throw new NonRetryableException("MessageProcessingUtil.processMessage: ", rootCause);
             }
     }
 }

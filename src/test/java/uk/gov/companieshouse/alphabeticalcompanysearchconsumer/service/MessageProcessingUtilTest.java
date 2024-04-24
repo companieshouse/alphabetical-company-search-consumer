@@ -19,10 +19,10 @@ import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParam
 import uk.gov.companieshouse.logging.Logger;
 
 @ExtendWith(MockitoExtension.class)
-class AlphabeticalIndexUpdaterServiceTest {
+class MessageProcessingUtilTest {
 
     @InjectMocks
-    private AlphabeticalIndexUpdaterService alphabeticalIndexUpdaterService;
+    private MessageProcessingUtil messageProcessingUtil;
 
     @Mock
     private Logger logger;
@@ -41,7 +41,7 @@ class AlphabeticalIndexUpdaterServiceTest {
         when(serviceParameters.getData()).thenReturn(UPDATE);
 
         // When
-        alphabeticalIndexUpdaterService.processMessage(serviceParameters);
+        messageProcessingUtil.processMessage(serviceParameters);
 
         // Then
         final var expectedLogMessage = resourceToString("/fixtures/expected-log-message.txt",

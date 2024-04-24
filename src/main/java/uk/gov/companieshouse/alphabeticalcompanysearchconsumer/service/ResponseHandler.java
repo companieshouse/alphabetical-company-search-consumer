@@ -14,26 +14,26 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.Lo
 @Component
 public class ResponseHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
+    private static final Logger logger = LoggerFactory.getLogger(NAMESPACE);
 
     public void handle(String message, URIValidationException ex) {
-        LOGGER.error(message, ex, getLogMap(null));
+        logger.error(message, ex, getLogMap(null));
         throw new NonRetryableException(message, ex);
     }
 
     public void handle(String message, IllegalArgumentException ex) {
         String causeMessage = ex.getCause() != null
                 ? String.format("; %s", ex.getCause().getMessage()) : "";
-        LOGGER.info(message + causeMessage, getLogMap(null));
+                logger.info(message + causeMessage, getLogMap(null));
         throw new RetryableException(message, ex);
     }
 
     public void handle(String message, ApiErrorResponseException ex) {
         if (HttpStatus.valueOf(ex.getStatusCode()).is5xxServerError()) {
-            LOGGER.info(message, getLogMap(null));
+            logger.info(message, getLogMap(null));
             throw new RetryableException(message, ex);
         } else {
-            LOGGER.error(message, ex, getLogMap(null));
+            logger.error(message, ex, getLogMap(null));
             throw new NonRetryableException(message, ex);
         }
     }

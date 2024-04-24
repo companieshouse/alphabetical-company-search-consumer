@@ -23,7 +23,7 @@ public class ApiClientUtils {
             // Handle the exception appropriately
             final var rootCause = getRootCause(e);
             logger.error(String.format("NonRetryable Error: %s", rootCause));
-            throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: ", rootCause);
+            throw new NonRetryableException("MessageProcessingUtil.processMessage: ", rootCause);
         }
     }
 }
