@@ -1,10 +1,5 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
@@ -20,6 +15,13 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.DELETE_PAYLOAD;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
+
 /**
  * "Test" class re-purposed to produce {@link ResourceChangedData} messages to the
  * <code>company-stream-profile</code> topic in Tilt. This is NOT to be run as part of an automated
@@ -31,7 +33,7 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
 @TestPropertySource(locations = "classpath:stream-company-profile-in-tilt.properties")
 @Import(TestKafkaConfig.class)
 @SuppressWarnings("squid:S3577") // This is NOT to be run as part of an automated test suite.
-class StreamCompanyProfileInTiltProducer {
+class StreamDeleteCompanyProfileInTiltProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
         "StreamCompanyProfileInTiltProducer");
@@ -48,7 +50,7 @@ class StreamCompanyProfileInTiltProducer {
     @Test
     void produceMessageToTilt() throws InterruptedException, ExecutionException, TimeoutException {
         final var future = testProducer.send(new ProducerRecord<>(
-            streamCompanyProfileTopic, 0, System.currentTimeMillis(), "key", UPDATE));
+            streamCompanyProfileTopic, 0, System.currentTimeMillis(), "key", DELETE_PAYLOAD));
         final var result = future.get(MESSAGE_WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         final var partition = result.partition();
         final var offset = result.offset();
