@@ -36,9 +36,6 @@ public class UpsertService {
                     .alphabeticalCompanySearch()
                     .put(resourceUri, companyProfileApi)
                     .execute();
-            System.out.println("execute successful");
-
-            // return response;
         } catch (ApiErrorResponseException e) {
             // Log error message and throw it again
             logger.error("Error occurred during upsert request. Company number: " + companyNumber + ", Resource URI: "
