@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config;
 
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.AlphabeticalCompanySearchConsumerApplication.NAMESPACE;
-
 import consumer.deserialization.AvroDeserializer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,6 +22,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.InvalidMessageRouter;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
@@ -39,6 +41,13 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
 @Configuration
 @EnableKafka
 public class Config {
+
+     @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .registerModule(new JavaTimeModule());
+    }
 
     @Bean
     public ConcurrentMap<ServiceResultStatus, ResponseEntityFactory> responseEntityFactoryMap() {

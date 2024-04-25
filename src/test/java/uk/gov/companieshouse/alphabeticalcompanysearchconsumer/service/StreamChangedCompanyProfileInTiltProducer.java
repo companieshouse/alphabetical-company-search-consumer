@@ -33,7 +33,7 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
 @SuppressWarnings("squid:S3577") // This is NOT to be run as part of an automated test suite.
 class StreamChangedCompanyProfileInTiltProducer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
+    private static final Logger logger = LoggerFactory.getLogger(
         "StreamCompanyProfileInTiltProducer");
 
     private static final int MESSAGE_WAIT_TIMEOUT_SECONDS = 10;
@@ -52,7 +52,7 @@ class StreamChangedCompanyProfileInTiltProducer {
         final var result = future.get(MESSAGE_WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         final var partition = result.partition();
         final var offset = result.offset();
-        LOGGER.info("Message " + UPDATE + " delivered to topic " + streamCompanyProfileTopic
+        logger.info("Message " + UPDATE + " delivered to topic " + streamCompanyProfileTopic
             + " on partition " + partition + " with offset " + offset + ".");
     }
 }

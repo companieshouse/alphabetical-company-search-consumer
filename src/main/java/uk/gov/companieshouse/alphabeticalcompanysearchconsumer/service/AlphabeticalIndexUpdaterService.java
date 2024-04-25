@@ -2,8 +2,6 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils.getLogMap;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils.getRootCause;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
@@ -19,12 +17,15 @@ import uk.gov.companieshouse.logging.Logger;
 public class AlphabeticalIndexUpdaterService implements Service {
 
     private final Logger logger;
+    private final UpsertService upsertService;
 
     private AlphabeticalIndexDeleteService alphabeticalIndexDeleteService;
 
-    public AlphabeticalIndexUpdaterService(Logger logger, AlphabeticalIndexDeleteService alphabeticalIndexDeleteService) {
-        this.alphabeticalIndexDeleteService = alphabeticalIndexDeleteService;
+    public AlphabeticalIndexUpdaterService(Logger logger, AlphabeticalIndexDeleteService alphabeticalIndexDeleteService,
+    UpsertService upsertService) {
         this.logger = logger;
+        this.alphabeticalIndexDeleteService = alphabeticalIndexDeleteService;
+        this.upsertService = upsertService;
     }
 
     @Override
@@ -46,6 +47,7 @@ public class AlphabeticalIndexUpdaterService implements Service {
             switch (messageType) {
                 case "changed":
                     logger.debug("This is a 'changed' type message.");
+                    upsertService.upsertService(parameters);
                     break;
                 case "deleted":
                     logger.debug("This is a 'deleted' type message.");
@@ -64,5 +66,4 @@ public class AlphabeticalIndexUpdaterService implements Service {
             throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: ", rootCause);
         }
     }
-
 }
