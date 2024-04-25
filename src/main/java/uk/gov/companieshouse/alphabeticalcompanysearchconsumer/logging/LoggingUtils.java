@@ -1,8 +1,6 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging;
 
 import java.util.Map;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
 import uk.gov.companieshouse.logging.util.DataMap;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
