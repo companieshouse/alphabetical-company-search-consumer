@@ -19,8 +19,12 @@ public class AlphabeticalIndexUpdaterService implements Service {
     private final Logger logger;
     private final UpsertService upsertService;
 
-    public AlphabeticalIndexUpdaterService(Logger logger, UpsertService upsertService) {
+    private AlphabeticalIndexDeleteService alphabeticalIndexDeleteService;
+
+    public AlphabeticalIndexUpdaterService(Logger logger, AlphabeticalIndexDeleteService alphabeticalIndexDeleteService,
+    UpsertService upsertService) {
         this.logger = logger;
+        this.alphabeticalIndexDeleteService = alphabeticalIndexDeleteService;
         this.upsertService = upsertService;
     }
 
@@ -36,25 +40,30 @@ public class AlphabeticalIndexUpdaterService implements Service {
             ", resource kind " + resourceKind + ", resource URI " + resourceUri + ".",
             getLogMap(message));
 
-            try {
-                var messageType = message.getEvent().getType();
-                message.getResourceId();
-                switch (messageType) {
-                    case "changed":
-                        logger.debug("This is a 'changed' type message.");
-                        upsertService.upsertService(parameters);
-                        break;
-                    default:
-            logger.error(String.format("NonRetryable error occurred, unknown message type of %s", messageType));
-            throw new IllegalArgumentException("AlphabeticalIndexUpdaterService unknown message type.");      
-                }
-            } catch (ApiErrorResponseException apiException) {
-                logger.error(String.format("Error response from INTERNAL API: %s", apiException));
-                throw new RetryableException("Attempting to retry due to failed API response", apiException); // Let it propagate as it's already a RetryableException
-            } catch (Exception exception) {
-                final var rootCause = getRootCause(exception);
-                logger.error("Unknown error occurred: " + exception.getMessage(), exception);
-                throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: ", rootCause);
+        try {
+            var messageType = message.getEvent().getType();
+            message.getResourceId();
+
+            switch (messageType) {
+                case "changed":
+                    logger.debug("This is a 'changed' type message.");
+                    upsertService.upsertService(parameters);
+                    break;
+                case "deleted":
+                    logger.debug("This is a 'deleted' type message.");
+                    alphabeticalIndexDeleteService.deleteCompanyFromAlphabeticalIndex(message.getResourceId());
+                    break;
+                default:
+                    logger.error(String.format("NonRetryable error occurred, unknown message type of %s", messageType));
+                    throw new IllegalArgumentException("AlphabeticalIndexUpdaterService unknown message type.");
             }
+        }catch (ApiErrorResponseException apiException) {
+            logger.error(String.format("Error response from INTERNAL API: %s", apiException));
+            throw new RetryableException("Attempting to retry due to failed API response", apiException);
+        } catch (Exception exception) {
+            final var rootCause = getRootCause(exception);
+            logger.error(String.format("NonRetryable error occurred. Error: %s", rootCause));
+            throw new NonRetryableException("AlphabeticalIndexUpdaterService.processMessage: ", rootCause);
+        }
     }
 }
