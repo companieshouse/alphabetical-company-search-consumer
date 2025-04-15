@@ -26,4 +26,3 @@ In order to build `alphabetical-company-search-consumer` locally you will need t
 | Path                                                  | Method | Description                                                         |
 |-------------------------------------------------------|--------|---------------------------------------------------------------------|
 | *`/alphabetical-company-search-consumer/healthcheck`* | GET    | Returns HTTP OK (`200`) to indicate a healthy application instance. |
-
