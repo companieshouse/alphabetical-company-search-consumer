@@ -23,7 +23,7 @@ variable "human_log" {
 
 # Kafka consumer configuration
 variable "backoff_delay" {
-  default   = 30000
+  default   = 31000
   type      = number
   description = "The delay in milliseconds between message republish attempts."
 }
