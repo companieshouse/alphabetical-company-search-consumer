@@ -25,12 +25,13 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
-@SpringBootTest
+@SpringBootTest(classes = ConsumerNonRetryableExceptionTest.class)
 @ActiveProfiles("test_main_nonretryable")
 class ConsumerNonRetryableExceptionTest extends AbstractKafkaIntegrationTest {
 

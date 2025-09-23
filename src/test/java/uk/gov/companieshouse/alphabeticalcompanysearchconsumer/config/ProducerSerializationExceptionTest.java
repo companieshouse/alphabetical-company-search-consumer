@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.AbstractKafkaIntegrationTest;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;

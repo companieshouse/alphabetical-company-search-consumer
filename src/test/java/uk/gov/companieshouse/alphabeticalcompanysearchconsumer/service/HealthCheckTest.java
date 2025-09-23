@@ -8,13 +8,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.AlphabeticalCompanySearchConsumerApplicationTests;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestKafkaConfig;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(classes = HealthCheckTest.class)
 @ActiveProfiles("test_main_positive")
 @Import(TestKafkaConfig.class)
 class HealthCheckTest {

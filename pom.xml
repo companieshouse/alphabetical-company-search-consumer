@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
@@ -16,14 +16,14 @@
         <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <spring-boot-dependencies.version>3.2.2</spring-boot-dependencies.version>
-        <spring-boot-maven-plugin.version>3.2.2</spring-boot-maven-plugin.version>
+        <spring-boot-dependencies.version>3.5.5</spring-boot-dependencies.version>
+        <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
 
         <test-containers.version>1.19.4</test-containers.version>
-        <structured-logging.version>3.0.3</structured-logging.version>
-        <api-sdk-manager-java-library.version>3.0.4</api-sdk-manager-java-library.version>
-        <private-api-sdk-java.version>4.0.106</private-api-sdk-java.version>
-        <kafka-models.version>3.0.7</kafka-models.version>
+        <structured-logging.version>3.0.40</structured-logging.version>
+        <api-sdk-manager-java-library.version>3.0.11</api-sdk-manager-java-library.version>
+        <private-api-sdk-java.version>4.0.360</private-api-sdk-java.version>
+        <kafka-models.version>3.0.21</kafka-models.version>
         <ch-kafka.version>3.0.1</ch-kafka.version>
         <system-lambda.version>1.2.1</system-lambda.version>
         <skip.unit.tests>false</skip.unit.tests>
@@ -305,15 +305,16 @@
                 </configuration>
             </plugin>
             <plugin>
-              <groupId>org.jacoco</groupId>
-              <artifactId>jacoco-maven-plugin</artifactId>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
             <plugin>
-              <groupId>org.sonarsource.scanner.maven</groupId>
-              <artifactId>sonar-maven-plugin</artifactId>
-              <version>${sonar-maven-plugin.version}</version>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
 
 </project>
+
