@@ -29,22 +29,18 @@
         <spring-web.version>6.1.21</spring-web.version>
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>false</skip.integration.tests>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml,
-			${project.basedir}/target/site/jacoco-it/jacoco.xml
-		</sonar.coverage.jacoco.xmlReportPaths>
-        <sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
 
         <!-- Docker -->
         <jib-maven-plugin.version>3.4.0</jib-maven-plugin.version>
 
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
-        <sonar.java.binaries>${project.basedir}/target</sonar.java.binaries>
+        <sonar.java.binaries>${project.basedir}/target,${project.basedir}/target/*</sonar.java.binaries>
 		<sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
 		<sonar.login></sonar.login>
 		<sonar.password></sonar.password>
 		<sonar.projectKey>uk.gov.companieshouse:alphabetical-company-search-consumer</sonar.projectKey>
 		<sonar.projectName>alphabetical-company-search-consumer</sonar.projectName>
-        <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
         <junit-platform.version>1.13.4</junit-platform.version>
@@ -320,6 +316,7 @@
             <plugin>
               <groupId>org.jacoco</groupId>
               <artifactId>jacoco-maven-plugin</artifactId>
+              <version>${jacoco-maven-plugin.version}</version>
             </plugin>
             <plugin>
               <groupId>org.sonarsource.scanner.maven</groupId>
