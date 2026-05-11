@@ -49,6 +49,7 @@ class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
     @BeforeEach
     public void drainKafkaTopics() {
         testConsumer.poll(Duration.ofSeconds(1));
+        testConsumer.poll(Duration.ofMillis(500));
     }
 
     @Test
