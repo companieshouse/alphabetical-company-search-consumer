@@ -1,7 +1,8 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util;
 
-import javax.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
+
+import jakarta.annotation.PreDestroy;
 
 /**
  * Flags related to the state of an individual message that has been processed.

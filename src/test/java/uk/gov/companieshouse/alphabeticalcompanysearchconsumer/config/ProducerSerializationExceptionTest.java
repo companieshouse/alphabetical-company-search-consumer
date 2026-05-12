@@ -82,5 +82,4 @@ class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
         assertThat(noOfRecordsForTopic(consumerRecords, INVALID_TOPIC)).isEqualTo(1);
         verify(serializer, times(3)).toBinary(UPDATE);
     }
-
 }
