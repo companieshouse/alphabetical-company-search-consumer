@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging;
 
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.AlphabeticalCompanySearchConsumerApplication.NAMESPACE;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Application.NAMESPACE;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;

@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config;
 
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.AlphabeticalCompanySearchConsumerApplication.NAMESPACE;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Application.NAMESPACE;
 import consumer.deserialization.AvroDeserializer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
