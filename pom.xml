@@ -9,11 +9,13 @@
         <relativePath/>
     </parent>
 
+    <groupId>com.companieshouse</groupId>
     <artifactId>alphabetical-company-search-consumer</artifactId>
-    <version>unversioned</version>
-    <name>alphabetical-company-search-consumer</name>
+    <version>latest</version>
+    <name>${project.artifactId}</name>
+    <packaging>jar</packaging>
     <description>A service that consumes messages from the stream-company-profile topic and upserts the data to the alphabetical ElasticSearch index.</description>
-
+    
     <properties>
         <!-- Encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,17 +36,12 @@
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
-        <jib-maven-plugin.version>3.5.1</jib-maven-plugin.version>
-        <build-helper-maven-plugin>3.6.0</build-helper-maven-plugin> <!-- itest -->
+        <jib-maven-plugin.version>3.5.2</jib-maven-plugin.version>
+        <build-helper-maven-plugin>3.6.0</build-helper-maven-plugin>
 
         <!-- Internal Dependencies -->
         <ch-boms.version>0.1.15</ch-boms.version>
 
-        <!-- Docker -->
-        <jib-maven-plugin.version>3.4.0</jib-maven-plugin.version>
-
-        <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
-        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
         <junit-platform.version>1.13.4</junit-platform.version>
         <avro.version>1.12.1</avro.version>

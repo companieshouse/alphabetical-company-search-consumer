@@ -12,7 +12,6 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
-
 public class ApiClientUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
