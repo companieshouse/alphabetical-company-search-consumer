@@ -8,11 +8,12 @@ import uk.gov.companieshouse.sdk.manager.ApiSdkManager;
 @Component
 public class ApiClientService {
 
-    public ApiClient ApiClientService() {
+    public ApiClient getApiClient() {
         return ApiSdkManager.getSDK();
     }
 
     public InternalApiClient getInternalApiClient() {
         return ApiSdkManager.getPrivateSDK();
     }
+
 }

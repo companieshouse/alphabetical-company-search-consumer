@@ -1,12 +1,8 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +16,13 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.DELETE_PAYLOAD;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
+
 /**
  * "Test" class re-purposed to produce {@link ResourceChangedData} messages to the
  * <code>company-stream-profile</code> topic in Tilt. This is NOT to be run as part of an automated
@@ -31,9 +34,10 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
 @TestPropertySource(locations = "classpath:stream-company-profile-in-tilt.properties")
 @Import(TestKafkaConfig.class)
 @SuppressWarnings("squid:S3577") // This is NOT to be run as part of an automated test suite.
-class StreamChangedCompanyProfileInTiltProducer {
+@Disabled
+class StreamDeleteCompanyProfileInTiltProducerIT {
 
-    private static final Logger logger = LoggerFactory.getLogger(
+    private static final Logger LOGGER = LoggerFactory.getLogger(
         "StreamCompanyProfileInTiltProducer");
 
     private static final int MESSAGE_WAIT_TIMEOUT_SECONDS = 10;
@@ -48,11 +52,11 @@ class StreamChangedCompanyProfileInTiltProducer {
     @Test
     void produceMessageToTilt() throws InterruptedException, ExecutionException, TimeoutException {
         final var future = testProducer.send(new ProducerRecord<>(
-            streamCompanyProfileTopic, 0, System.currentTimeMillis(), "key", UPDATE));
+            streamCompanyProfileTopic, 0, System.currentTimeMillis(), "key", DELETE_PAYLOAD));
         final var result = future.get(MESSAGE_WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         final var partition = result.partition();
         final var offset = result.offset();
-        logger.info("Message " + UPDATE + " delivered to topic " + streamCompanyProfileTopic
+        LOGGER.info("Message " + UPDATE + " delivered to topic " + streamCompanyProfileTopic
             + " on partition " + partition + " with offset " + offset + ".");
     }
 }

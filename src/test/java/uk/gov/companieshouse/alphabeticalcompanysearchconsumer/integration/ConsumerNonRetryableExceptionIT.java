@@ -1,13 +1,16 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.ERROR_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.INVALID_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.MAIN_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.RETRY_TOPIC;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
+import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -18,22 +21,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
-import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.NonRetryableExceptionService;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_nonretryable")
-class ConsumerInvalidTopicTest extends AbstractKafkaIntegrationTest {
+class ConsumerNonRetryableExceptionIT extends AbstractKafkaIntegrationTest {
 
     @Autowired
     private KafkaProducer<String, ResourceChangedData> testProducer;
+
     @Autowired
     private KafkaConsumer<String, ResourceChangedData> testConsumer;
+
     @Autowired
     private CountDownLatch latch;
+
+    @Autowired
+//    @Qualifier("nonRetryableExceptionService")
+    private NonRetryableExceptionService service;
 
     @BeforeEach
     public void drainKafkaTopics() {
@@ -41,14 +48,18 @@ class ConsumerInvalidTopicTest extends AbstractKafkaIntegrationTest {
     }
 
     @Test
-    void testPublishToInvalidMessageTopicIfInvalidDataDeserialised() throws InterruptedException {
+    void testRepublishToInvalidMessageTopicIfNonRetryableExceptionThrown() throws InterruptedException {
+        //given
+        ProducerRecord<String, ResourceChangedData> producerRecord = new ProducerRecord<>(MAIN_TOPIC, 0,
+                System.currentTimeMillis(), "key", UPDATE);
 
         //when
-        testProducer.send(new ProducerRecord<>(MAIN_TOPIC, 0, System.currentTimeMillis(), "key",
-                UPDATE));
+        testProducer.send(producerRecord);
+
         if (!latch.await(5L, TimeUnit.SECONDS)) {
             fail("Timed out waiting for latch");
         }
+
         ConsumerRecords<?, ?> consumerRecords = KafkaTestUtils.getRecords(testConsumer, Duration.ofSeconds(10), 2);
 
         //then

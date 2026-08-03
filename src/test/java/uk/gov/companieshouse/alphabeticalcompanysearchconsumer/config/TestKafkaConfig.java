@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.NonRetryableExceptionService;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.RetryableExceptionService;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.serialization.SerializerFactory;
@@ -71,7 +72,12 @@ public class TestKafkaConfig {
 
     @Bean("nonRetryableExceptionService")
     @Primary
-    public Service getService() {
+    public Service getNonRetryableService() {
         return new NonRetryableExceptionService();
+    }
+
+    @Bean("retryableExceptionService")
+    public Service getRetryableService() {
+        return new RetryableExceptionService();
     }
 }

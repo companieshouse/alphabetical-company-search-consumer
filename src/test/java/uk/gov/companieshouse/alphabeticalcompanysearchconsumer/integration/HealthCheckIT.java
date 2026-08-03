@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,7 +17,7 @@ import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestKafkaC
 @SpringBootTest
 @ActiveProfiles("test_main_positive")
 @Import(TestKafkaConfig.class)
-class HealthCheckTest {
+class HealthCheckIT {
 
     @Autowired
     private MockMvc mockMvc;

@@ -378,6 +378,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
+                    <excludes>
+                        <exclude>**/*IntegrationTest.java</exclude>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <argLine>${surefireArgLine}</argLine>
                     <skipTests>${skip.unit.tests}</skipTests>
@@ -405,10 +409,16 @@
                             <value>org.sonar.java.jacoco.JUnitListener</value>
                         </property>
                     </properties>
+                    <includes>
+                        <include>**/*IntegrationTest.java</include>
+                        <include>**/*IT.java</include>
+                    </includes>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <argLine>${failsafeArgLine}</argLine>
                     <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                     <skipITs>${skip.integration.tests}</skipITs>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
 

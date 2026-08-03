@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -21,12 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.RetryableExceptionService;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_retryable")
-class ConsumerRetryableExceptionTest extends AbstractKafkaIntegrationTest {
+class ConsumerRetryableExceptionIT extends AbstractKafkaIntegrationTest {
 
     @Autowired
     private KafkaProducer<String, ResourceChangedData> testProducer;
@@ -38,7 +39,7 @@ class ConsumerRetryableExceptionTest extends AbstractKafkaIntegrationTest {
     private CountDownLatch latch;
 
     @Autowired
-    private Service service;
+    private RetryableExceptionService service;
 
     @BeforeEach
     public void drainKafkaTopics() {

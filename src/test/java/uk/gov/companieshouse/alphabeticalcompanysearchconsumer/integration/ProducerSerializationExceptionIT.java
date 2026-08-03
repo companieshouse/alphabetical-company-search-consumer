@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -30,14 +30,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.AbstractKafkaIntegrationTest;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_nonretryable")
-class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
+class ProducerSerializationExceptionIT extends AbstractKafkaIntegrationTest {
 
     @TestConfiguration
     static class TestConfig {
