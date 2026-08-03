@@ -19,15 +19,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.NonRetryableExceptionService;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.RetryableExceptionService;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_nonretryable")
 class ConsumerNonRetryableExceptionIT extends AbstractKafkaIntegrationTest {
+
+    @TestConfiguration
+    static class TestConfig {
+
+        @Bean("nonRetryableExceptionService")
+        @Primary
+        public Service myService() {
+            return new NonRetryableExceptionService();
+        }
+    }
 
     @Autowired
     private KafkaProducer<String, ResourceChangedData> testProducer;
@@ -37,10 +52,6 @@ class ConsumerNonRetryableExceptionIT extends AbstractKafkaIntegrationTest {
 
     @Autowired
     private CountDownLatch latch;
-
-    @Autowired
-//    @Qualifier("nonRetryableExceptionService")
-    private NonRetryableExceptionService service;
 
     @BeforeEach
     public void drainKafkaTopics() {

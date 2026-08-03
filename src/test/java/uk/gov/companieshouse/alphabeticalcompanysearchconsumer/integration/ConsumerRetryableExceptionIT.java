@@ -18,16 +18,31 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.RetryableExceptionService;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_retryable")
 class ConsumerRetryableExceptionIT extends AbstractKafkaIntegrationTest {
+
+    @TestConfiguration
+    static class TestConfig {
+
+        @Bean("retryableExceptionService")
+        @Primary
+        public Service myService() {
+            return new RetryableExceptionService();
+        }
+    }
 
     @Autowired
     private KafkaProducer<String, ResourceChangedData> testProducer;
@@ -39,7 +54,8 @@ class ConsumerRetryableExceptionIT extends AbstractKafkaIntegrationTest {
     private CountDownLatch latch;
 
     @Autowired
-    private RetryableExceptionService service;
+    @Qualifier("retryableExceptionService")
+    private Service service;
 
     @BeforeEach
     public void drainKafkaTopics() {
@@ -55,7 +71,7 @@ class ConsumerRetryableExceptionIT extends AbstractKafkaIntegrationTest {
         //when
         testProducer.send(producerRecord);
 
-        if (!latch.await(5L, TimeUnit.SECONDS)) {
+        if (!latch.await(5, TimeUnit.SECONDS)) {
             fail("Timed out waiting for latch");
         }
 

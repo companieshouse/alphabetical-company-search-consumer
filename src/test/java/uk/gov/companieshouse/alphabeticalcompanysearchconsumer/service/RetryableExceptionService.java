@@ -9,7 +9,7 @@ public class RetryableExceptionService implements Service {
 
     @Override
     public void processMessage(ServiceParameters parameters) {
-        throw new RetryableException("Unable to handle message",
-                new Exception("Unable to handle message"));
+        throw new RetryableException("Unable to handle message", new Exception("Unable to handle message"));
     }
+
 }

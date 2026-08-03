@@ -30,6 +30,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.NonRetryableExceptionService;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
 import uk.gov.companieshouse.stream.ResourceChangedData;
@@ -40,11 +42,19 @@ class ProducerSerializationExceptionIT extends AbstractKafkaIntegrationTest {
 
     @TestConfiguration
     static class TestConfig {
+
+        @Bean("nonRetryableExceptionService")
+        @Primary
+        public Service myService() {
+            return new NonRetryableExceptionService();
+        }
+
         @Bean
         @Primary
         public AvroSerializer<ResourceChangedData> serializer() {
             return Mockito.mock(AvroSerializer.class);
         }
+
     }
 
     @Autowired

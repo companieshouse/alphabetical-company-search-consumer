@@ -19,10 +19,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.NonRetryableExceptionService;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.RetryableExceptionService;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.serialization.SerializerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
@@ -47,8 +43,7 @@ public class TestKafkaConfig {
                 ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false",
                 ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString()),
             new StringDeserializer(), new AvroDeserializer<>(ResourceChangedData.class));
-        kafkaConsumer.subscribe(List.of(MAIN_TOPIC, ERROR_TOPIC, RETRY_TOPIC,
-            INVALID_TOPIC));
+        kafkaConsumer.subscribe(List.of(MAIN_TOPIC, ERROR_TOPIC, RETRY_TOPIC, INVALID_TOPIC));
         return kafkaConsumer;
     }
 
@@ -68,16 +63,5 @@ public class TestKafkaConfig {
                     throw new RuntimeException(e);
                 }
             });
-    }
-
-    @Bean("nonRetryableExceptionService")
-    @Primary
-    public Service getNonRetryableService() {
-        return new NonRetryableExceptionService();
-    }
-
-    @Bean("retryableExceptionService")
-    public Service getRetryableService() {
-        return new RetryableExceptionService();
     }
 }
