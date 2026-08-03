@@ -7,32 +7,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestKafkaConfig;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.NonRetryableExceptionService;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestServiceConfig;
 
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test_main_positive")
-@Import(TestKafkaConfig.class)
+@Import({TestKafkaConfig.class, TestServiceConfig.class})
 class HealthCheckIT {
-
-    @TestConfiguration
-    static class TestConfig {
-
-        @Bean("nonRetryableExceptionService")
-        @Primary
-        public Service myService() {
-            return new NonRetryableExceptionService();
-        }
-    }
 
     @Autowired
     private MockMvc mockMvc;

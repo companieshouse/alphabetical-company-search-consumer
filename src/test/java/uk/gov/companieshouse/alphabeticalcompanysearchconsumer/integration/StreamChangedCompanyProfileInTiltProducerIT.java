@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Application;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestKafkaConfig;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestServiceConfig;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
@@ -30,7 +31,7 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:stream-company-profile-in-tilt.properties")
-@Import(TestKafkaConfig.class)
+@Import({TestKafkaConfig.class, TestServiceConfig.class})
 @SuppressWarnings("squid:S3577") // This is NOT to be run as part of an automated test suite.
 @Disabled
 class StreamChangedCompanyProfileInTiltProducerIT {

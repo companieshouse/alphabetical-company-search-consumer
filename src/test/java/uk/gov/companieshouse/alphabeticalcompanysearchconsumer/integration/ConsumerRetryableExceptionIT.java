@@ -18,7 +18,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -52,10 +51,6 @@ class ConsumerRetryableExceptionIT extends AbstractKafkaIntegrationTest {
 
     @Autowired
     private CountDownLatch latch;
-
-    @Autowired
-    @Qualifier("retryableExceptionService")
-    private Service service;
 
     @BeforeEach
     public void drainKafkaTopics() {

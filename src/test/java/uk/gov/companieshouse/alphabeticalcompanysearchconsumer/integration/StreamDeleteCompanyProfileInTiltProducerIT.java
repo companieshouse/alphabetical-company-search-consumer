@@ -1,5 +1,11 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.DELETE_PAYLOAD;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Disabled;
@@ -12,16 +18,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Application;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestKafkaConfig;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestServiceConfig;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.DELETE_PAYLOAD;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
 /**
  * "Test" class re-purposed to produce {@link ResourceChangedData} messages to the
@@ -32,7 +32,7 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.Test
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:stream-company-profile-in-tilt.properties")
-@Import(TestKafkaConfig.class)
+@Import({TestKafkaConfig.class, TestServiceConfig.class})
 @SuppressWarnings("squid:S3577") // This is NOT to be run as part of an automated test suite.
 @Disabled
 class StreamDeleteCompanyProfileInTiltProducerIT {
