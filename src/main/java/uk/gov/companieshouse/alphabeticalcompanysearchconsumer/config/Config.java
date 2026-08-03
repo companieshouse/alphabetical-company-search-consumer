@@ -1,6 +1,13 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config;
 
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Application.NAMESPACE;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import consumer.deserialization.AvroDeserializer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,6 +16,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +30,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.InvalidMessageRouter;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
@@ -44,9 +49,12 @@ public class Config {
 
      @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .registerModule(new JavaTimeModule());
+         return new ObjectMapper()
+                 .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+                 .registerModule(new JavaTimeModule())
+                 .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL)
+                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
 
     @Bean
@@ -55,7 +63,7 @@ public class Config {
     }
 
     @Bean
-    public ConsumerFactory<String, ResourceChangedData> consumerFactory(
+    public ConsumerFactory<@NonNull String, ResourceChangedData> consumerFactory(
         @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
         return new DefaultKafkaConsumerFactory<>(
             Map.of(
@@ -71,7 +79,7 @@ public class Config {
     }
 
     @Bean
-    public ProducerFactory<String, ResourceChangedData> producerFactory(
+    public ProducerFactory<@NonNull String, ResourceChangedData> producerFactory(
         @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers,
         MessageFlags messageFlags,
         @Value("${invalid_message_topic}") String invalidMessageTopic,

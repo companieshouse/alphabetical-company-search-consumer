@@ -42,9 +42,10 @@
         <!-- Internal Dependencies -->
         <ch-boms.version>0.1.15</ch-boms.version>
 
-        <junit-jupiter.version>5.13.4</junit-jupiter.version>
-        <junit-platform.version>1.13.4</junit-platform.version>
-        <avro.version>1.12.1</avro.version>
+        <!-- 3rd Party dependencies -->
+<!--        <junit-jupiter.version>5.13.4</junit-jupiter.version>-->
+<!--        <junit-platform.version>1.13.4</junit-platform.version>-->
+<!--        <avro.version>1.12.1</avro.version>-->
         <system-lambda.version>1.2.1</system-lambda.version>
         <test-containers.version>1.19.4</test-containers.version>
 

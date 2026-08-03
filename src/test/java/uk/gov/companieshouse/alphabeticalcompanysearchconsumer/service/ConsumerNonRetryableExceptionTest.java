@@ -17,7 +17,9 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
@@ -38,10 +40,13 @@ class ConsumerNonRetryableExceptionTest extends AbstractKafkaIntegrationTest {
     private CountDownLatch latch;
 
     @Autowired
+    @Qualifier("nonRetryableExceptionService")
     private Service service;
 
     @BeforeEach
-    public void drainKafkaTopics() {
+    public void drainKafkaTopics() throws Exception {
+        MockitoAnnotations.openMocks(this).close();
+
         testConsumer.poll(Duration.ofSeconds(1));
     }
 
@@ -54,7 +59,7 @@ class ConsumerNonRetryableExceptionTest extends AbstractKafkaIntegrationTest {
         //when
         testProducer.send(producerRecord);
 
-        if (!latch.await(10L, TimeUnit.SECONDS)) {
+        if (!latch.await(5L, TimeUnit.SECONDS)) {
             fail("Timed out waiting for latch");
         }
 

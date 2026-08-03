@@ -69,7 +69,7 @@ public class TestKafkaConfig {
             });
     }
 
-    @Bean
+    @Bean("nonRetryableExceptionService")
     @Primary
     public Service getService() {
         return new NonRetryableExceptionService();

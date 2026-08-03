@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -51,8 +50,10 @@ class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
 
     @Autowired
     private KafkaProducer<String, ResourceChangedData> testProducer;
+
     @Autowired
     private KafkaConsumer<String, ResourceChangedData> testConsumer;
+
     @Autowired
     private CountDownLatch latch;
 
@@ -78,9 +79,12 @@ class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
             .thenThrow(new SerializationException("Test exception 2."))
             .thenReturn(null);
 
+        ProducerRecord<String, ResourceChangedData> producerRecord = new ProducerRecord<>(MAIN_TOPIC, 0,
+                System.currentTimeMillis(), "key", UPDATE);
+
         // when
-        testProducer.send(new ProducerRecord<>(MAIN_TOPIC, 0, System.currentTimeMillis(), "key",
-            UPDATE));
+        testProducer.send(producerRecord);
+
         if (!latch.await(5L, TimeUnit.SECONDS)) {
             fail("Timed out waiting for latch");
         }
@@ -93,6 +97,7 @@ class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
         assertThat(noOfRecordsForTopic(consumerRecords, RETRY_TOPIC)).isZero();
         assertThat(noOfRecordsForTopic(consumerRecords, ERROR_TOPIC)).isZero();
         assertThat(noOfRecordsForTopic(consumerRecords, INVALID_TOPIC)).isEqualTo(1);
+
         verify(serializer, times(3)).toBinary(UPDATE);
     }
 }

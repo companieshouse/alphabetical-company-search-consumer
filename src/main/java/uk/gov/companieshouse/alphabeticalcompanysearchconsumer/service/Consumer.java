@@ -48,7 +48,6 @@ public class Consumer {
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             include = RetryableException.class
     )
-
     public void consume(Message<@NonNull ResourceChangedData> message) {
         try {
             service.processMessage(new ServiceParameters(message.getPayload()));
