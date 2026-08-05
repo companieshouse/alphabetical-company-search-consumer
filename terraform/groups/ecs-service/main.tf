@@ -110,7 +110,7 @@ module "ecs-service-old-kafka" {
   healthcheck_healthy_threshold     = "2"
   healthcheck_unhealthy_threshold   = "5"
 
-  # Disable cloudwatch alarms that are dependant on loadbalancer
+  # Disable cloudwatch alarms that are dependent on load balancer
   cloudwatch_unhealthy_host_count_enabled = false
   cloudwatch_healthy_host_count_enabled   = false
   cloudwatch_response_time_enabled        = false
