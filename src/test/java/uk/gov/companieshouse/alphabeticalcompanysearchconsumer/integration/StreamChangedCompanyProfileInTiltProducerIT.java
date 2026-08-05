@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.AlphabeticalCompanySearchConsumerApplication;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Application;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestKafkaConfig;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestServiceConfig;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.stream.ResourceChangedData;
@@ -25,13 +27,14 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
  * <code>company-stream-profile</code> topic in Tilt. This is NOT to be run as part of an automated
  * test suite. It is for manual testing only.
  */
-@SpringBootTest(classes = AlphabeticalCompanySearchConsumerApplication.class,
+@SpringBootTest(classes = Application.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:stream-company-profile-in-tilt.properties")
-@Import(TestKafkaConfig.class)
+@Import({TestKafkaConfig.class, TestServiceConfig.class})
 @SuppressWarnings("squid:S3577") // This is NOT to be run as part of an automated test suite.
-class StreamChangedCompanyProfileInTiltProducer {
+@Disabled
+class StreamChangedCompanyProfileInTiltProducerIT {
 
     private static final Logger logger = LoggerFactory.getLogger(
         "StreamCompanyProfileInTiltProducer");

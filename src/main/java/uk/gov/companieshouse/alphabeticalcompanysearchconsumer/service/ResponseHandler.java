@@ -1,5 +1,5 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
-import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.AlphabeticalCompanySearchConsumerApplication.NAMESPACE;
+import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Application.NAMESPACE;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;

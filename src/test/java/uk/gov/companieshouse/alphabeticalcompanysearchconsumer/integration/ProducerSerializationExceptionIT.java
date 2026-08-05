@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -22,28 +22,46 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.AbstractKafkaIntegrationTest;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestServiceConfig;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_nonretryable")
-class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
+@Import(TestServiceConfig.class)
+class ProducerSerializationExceptionIT extends AbstractKafkaIntegrationTest {
+
+    @TestConfiguration
+    static class TestConfig {
+
+        @Bean
+        @Primary
+        public AvroSerializer<ResourceChangedData> serializer() {
+            return Mockito.mock(AvroSerializer.class);
+        }
+
+    }
 
     @Autowired
     private KafkaProducer<String, ResourceChangedData> testProducer;
+
     @Autowired
     private KafkaConsumer<String, ResourceChangedData> testConsumer;
+
     @Autowired
     private CountDownLatch latch;
 
-    @MockBean
+    @Autowired
     private AvroSerializer<ResourceChangedData> serializer;
 
     @BeforeEach
@@ -65,9 +83,12 @@ class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
             .thenThrow(new SerializationException("Test exception 2."))
             .thenReturn(null);
 
+        ProducerRecord<String, ResourceChangedData> producerRecord = new ProducerRecord<>(MAIN_TOPIC, 0,
+                System.currentTimeMillis(), "key", UPDATE);
+
         // when
-        testProducer.send(new ProducerRecord<>(MAIN_TOPIC, 0, System.currentTimeMillis(), "key",
-            UPDATE));
+        testProducer.send(producerRecord);
+
         if (!latch.await(5L, TimeUnit.SECONDS)) {
             fail("Timed out waiting for latch");
         }
@@ -80,6 +101,7 @@ class ProducerSerializationExceptionTest extends AbstractKafkaIntegrationTest {
         assertThat(noOfRecordsForTopic(consumerRecords, RETRY_TOPIC)).isZero();
         assertThat(noOfRecordsForTopic(consumerRecords, ERROR_TOPIC)).isZero();
         assertThat(noOfRecordsForTopic(consumerRecords, INVALID_TOPIC)).isEqualTo(1);
+
         verify(serializer, times(3)).toBinary(UPDATE);
     }
 }

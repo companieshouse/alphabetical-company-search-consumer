@@ -2,6 +2,7 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils.getLogMap;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.LoggingUtils.getRootCause;
+
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.RetryableException;
@@ -18,13 +19,11 @@ public class AlphabeticalIndexUpdaterService implements Service {
 
     private final Logger logger;
     private final UpsertService upsertService;
+    private final AlphabeticalIndexDeleteService deleteService;
 
-    private AlphabeticalIndexDeleteService alphabeticalIndexDeleteService;
-
-    public AlphabeticalIndexUpdaterService(Logger logger, AlphabeticalIndexDeleteService alphabeticalIndexDeleteService,
-    UpsertService upsertService) {
+    public AlphabeticalIndexUpdaterService(Logger logger, AlphabeticalIndexDeleteService deleteService, UpsertService upsertService) {
         this.logger = logger;
-        this.alphabeticalIndexDeleteService = alphabeticalIndexDeleteService;
+        this.deleteService = deleteService;
         this.upsertService = upsertService;
     }
 
@@ -42,7 +41,6 @@ public class AlphabeticalIndexUpdaterService implements Service {
 
         try {
             var messageType = message.getEvent().getType();
-            message.getResourceId();
 
             switch (messageType) {
                 case "changed":
@@ -51,15 +49,17 @@ public class AlphabeticalIndexUpdaterService implements Service {
                     break;
                 case "deleted":
                     logger.debug("This is a 'deleted' type message.");
-                    alphabeticalIndexDeleteService.deleteCompanyFromAlphabeticalIndex(message.getResourceId());
+                    deleteService.deleteCompanyFromAlphabeticalIndex(resourceId);
                     break;
                 default:
                     logger.error(String.format("NonRetryable error occurred, unknown message type of %s", messageType));
                     throw new IllegalArgumentException("AlphabeticalIndexUpdaterService unknown message type.");
             }
-        }catch (ApiErrorResponseException apiException) {
+
+        } catch (ApiErrorResponseException apiException) {
             logger.error(String.format("Error response from INTERNAL API: %s", apiException));
             throw new RetryableException("Attempting to retry due to failed API response", apiException);
+
         } catch (Exception exception) {
             final var rootCause = getRootCause(exception);
             logger.error(String.format("NonRetryable error occurred. Error: %s", rootCause));
