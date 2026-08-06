@@ -3,11 +3,6 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.Application.NAMESPACE;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import consumer.deserialization.AvroDeserializer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +25,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.InvalidMessageRouter;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.MessageFlags;
@@ -47,16 +46,16 @@ import uk.gov.companieshouse.stream.ResourceChangedData;
 @EnableKafka
 public class Config {
 
-     @Bean
-    public ObjectMapper objectMapper() {
-         return new ObjectMapper()
-                 .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-                 .registerModule(new JavaTimeModule())
-                 .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL)
-                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    @Bean
+    JsonMapper jsonMapper() {
+        return JsonMapper.builder()
+                .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+                .changeDefaultPropertyInclusion(incl ->
+                        incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .build();
     }
-
     @Bean
     public ConcurrentMap<ServiceResultStatus, ResponseEntityFactory> responseEntityFactoryMap() {
         return new ConcurrentHashMap<>();
@@ -120,16 +119,16 @@ public class Config {
     }
 
     @Bean
-    public KafkaTemplate<String, ResourceChangedData> kafkaTemplate(
-        ProducerFactory<String, ResourceChangedData> producerFactory) {
+    public KafkaTemplate<@NonNull String, @NonNull ResourceChangedData> kafkaTemplate(
+        ProducerFactory<@NonNull String, ResourceChangedData> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ResourceChangedData> kafkaListenerContainerFactory(
-        ConsumerFactory<String, ResourceChangedData> consumerFactory,
+    public ConcurrentKafkaListenerContainerFactory<@NonNull String, @NonNull ResourceChangedData> kafkaListenerContainerFactory(
+        ConsumerFactory<@NonNull String, ResourceChangedData> consumerFactory,
         @Value("${consumer.concurrency}") Integer concurrency) {
-        ConcurrentKafkaListenerContainerFactory<String, ResourceChangedData> factory =
+        ConcurrentKafkaListenerContainerFactory<@NonNull String, @NonNull ResourceChangedData> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setConcurrency(concurrency);
