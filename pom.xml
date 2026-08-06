@@ -30,9 +30,6 @@
         <spring-boot-dependencies.version>4.1.0</spring-boot-dependencies.version>
         <spring-boot-starter-aop.version>4.0.0-M2</spring-boot-starter-aop.version>
 
-        <open-telemetry-bom.version>2.28.1</open-telemetry-bom.version>
-        <open-telemetry-logback.version>2.28.1-alpha</open-telemetry-logback.version>
-
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
@@ -88,14 +85,6 @@
             </dependency>
 
             <dependency>
-                <groupId>io.opentelemetry.instrumentation</groupId>
-                <artifactId>opentelemetry-instrumentation-bom</artifactId>
-                <version>${open-telemetry-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot-dependencies.version}</version>
@@ -109,14 +98,6 @@
                 <version>${test-containers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <!-- Transitive Dependency: https://nvd.nist.gov/vuln/detail/CVE-2026-41178 -->
-            <dependency>
-                <groupId>io.opentelemetry.semconv</groupId>
-                <artifactId>opentelemetry-semconv</artifactId>
-                <version>1.42.0</version>
-                <scope>compile</scope>
             </dependency>
 
         </dependencies>
@@ -165,16 +146,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-opentelemetry</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-restclient</artifactId>
         </dependency>
@@ -184,11 +155,15 @@
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
+        <!-- External Dependencies -->
         <dependency>
-            <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-logback-appender-1.0</artifactId>
-            <version>${open-telemetry-logback.version}</version>
-            <scope>compile</scope>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
 
         <!-- Internal Dependencies -->
