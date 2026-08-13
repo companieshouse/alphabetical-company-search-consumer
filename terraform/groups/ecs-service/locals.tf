@@ -66,6 +66,14 @@ locals {
   # secrets to go in list
   task_secrets = concat(local.global_secret_list,local.service_secret_list)
 
+  # Filter out BOOTSTRAP_SERVER_URL for the "new" Kafka service so the .env file
+  # override takes effect (ECS secrets otherwise take precedence over env files),
+  # allowing it to point at Kafka 3 for dual deployments.
+  service_secret_list_new_kafka = [
+    for secret in local.service_secret_list : secret if secret.name != "BOOTSTRAP_SERVER_URL"
+  ]
+  task_secrets_new_kafka = concat(local.global_secret_list, local.service_secret_list_new_kafka)
+
   task_environment = concat(local.ssm_global_version_map,local.ssm_service_version_map)
 
 }
