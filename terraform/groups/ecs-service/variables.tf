@@ -173,6 +173,18 @@ variable "alphabetical_company_search_consumer_old_kafka_version" {
   default     = "latest"
 }
 
+variable "create_green_alphabetical_company_search_consumer_service" {
+  type        = bool
+  description = "Whether to create the green-alphabetical-company-search-consumer ECS service alongside the existing one."
+  default     = false
+}
+
+variable "green_alphabetical_company_search_consumer_version" {
+  type        = string
+  description = "The specific release tag for the green version of the container."
+  default     = "latest"
+}
+
 variable "log_level" {
   default     = "info"
   type        = string
