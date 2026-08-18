@@ -3,7 +3,7 @@ A service that consumes messages from the stream-company-profile topic and upser
 
 ## Build Requirements
 
-In order to build `alphabetical-company-search-consumer` locally you will need the following:
+In order to build `alphabetical-company-search-consumer` locally, you will need the following:
 
 - Java 21
 - Maven
