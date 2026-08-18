@@ -3,6 +3,7 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ApiClientUtils.mapMessageToRequest;
 
 import org.springframework.stereotype.Component;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.ApiProperties;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.UpsertServiceException;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 import uk.gov.companieshouse.api.InternalApiClient;
@@ -20,10 +21,12 @@ public class UpsertService {
 
     private final ApiClientService apiClientService;
     private final Logger logger;
+    private final ApiProperties apiProperties;
 
-    public UpsertService(ApiClientService apiClientService, Logger logger) {
+    public UpsertService(ApiClientService apiClientService, Logger logger, ApiProperties apiProperties) {
         this.apiClientService = apiClientService;
         this.logger = logger;
+        this.apiProperties = apiProperties;
     }
 
     public void upsertService(ServiceParameters parameters)
@@ -31,11 +34,11 @@ public class UpsertService {
 
         String companyNumber = parameters.getData().getResourceId();
         String companyResourceUri = parameters.getData().getResourceUri();
-        String resourceUri = String.format("/alphabetical-search/companies/%s", companyNumber);
+        String resourceUri = String.format("%s/%s", apiProperties.alphabeticalSearchUri(), companyNumber);
         CompanyProfileApi companyProfileApi = mapMessageToRequest(parameters);
 
         logger.info("Upserting company profile. Company number: " + companyNumber + ", Resource URI: "
-                + companyResourceUri);
+                + companyResourceUri + ", Upsert URI: " + resourceUri);
 
         try {
             InternalApiClient client = apiClientService.getInternalApiClient();
