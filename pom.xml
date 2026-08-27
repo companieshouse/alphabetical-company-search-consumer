@@ -15,7 +15,7 @@
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <description>A service that consumes messages from the stream-company-profile topic and upserts the data to the alphabetical ElasticSearch index.</description>
-    
+
     <properties>
         <!-- Encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,7 +37,7 @@
         <build-helper-maven-plugin>3.6.0</build-helper-maven-plugin>
 
         <!-- Internal Dependencies -->
-        <ch-boms.version>0.1.15</ch-boms.version>
+        <ch-boms.version>0.1.17</ch-boms.version>
 
         <!-- 3rd Party dependencies -->
         <system-lambda.version>1.2.1</system-lambda.version>
