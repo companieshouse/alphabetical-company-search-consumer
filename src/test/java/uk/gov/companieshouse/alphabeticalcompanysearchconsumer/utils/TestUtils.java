@@ -6,9 +6,11 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 public final class TestUtils {
 
     public static final String MAIN_TOPIC = "echo";
-    public static final String RETRY_TOPIC = "echo-echo-consumer-retry";
-    public static final String ERROR_TOPIC = "echo-echo-consumer-error";
-    public static final String INVALID_TOPIC = "echo-echo-consumer-invalid";
+    public static final String MAIN_GROUP = "echo-consumer";
+
+    public static final String RETRY_TOPIC = "%s-%s-retry".formatted(MAIN_TOPIC, MAIN_GROUP);
+    public static final String ERROR_TOPIC = "%s-%s-error".formatted(MAIN_TOPIC, MAIN_GROUP);
+    public static final String INVALID_TOPIC = "%s-%s-invalid".formatted(MAIN_TOPIC, MAIN_GROUP);
 
     private TestUtils(){
     }

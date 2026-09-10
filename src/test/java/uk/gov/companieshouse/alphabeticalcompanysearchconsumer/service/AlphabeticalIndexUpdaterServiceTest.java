@@ -21,9 +21,6 @@ import uk.gov.companieshouse.logging.Logger;
 @ExtendWith(MockitoExtension.class)
 class AlphabeticalIndexUpdaterServiceTest {
 
-    @InjectMocks
-    private AlphabeticalIndexUpdaterService alphabeticalIndexUpdaterService;
-
     @Mock
     private Logger logger;
 
@@ -31,7 +28,10 @@ class AlphabeticalIndexUpdaterServiceTest {
     private ServiceParameters serviceParameters;
 
     @Mock
-    private UpsertService upsertService;
+    private AlphabeticalIndexUpsertService upsertService;
+
+    @InjectMocks
+    private AlphabeticalIndexUpdaterService underTest;
 
     @Test
     @DisplayName("processMessage() logs message clearly")
@@ -41,7 +41,7 @@ class AlphabeticalIndexUpdaterServiceTest {
         when(serviceParameters.getData()).thenReturn(UPDATE);
 
         // When
-        alphabeticalIndexUpdaterService.processMessage(serviceParameters);
+        underTest.processMessage(serviceParameters);
 
         // Then
         final var expectedLogMessage = resourceToString("/fixtures/expected-log-message.txt",

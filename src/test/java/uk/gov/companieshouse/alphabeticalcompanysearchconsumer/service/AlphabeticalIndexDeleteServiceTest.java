@@ -1,24 +1,26 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.ApiProperties;
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
+import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.handler.search.PrivateSearchResourceHandler;
 import uk.gov.companieshouse.api.handler.search.alphabeticalCompany.PrivateAlphabeticalCompanySearchHandler;
 import uk.gov.companieshouse.api.handler.search.alphabeticalCompany.request.PrivateAlphabeticalCompanySearchDelete;
+import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.logging.Logger;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AlphabeticalIndexDeleteServiceTest {
@@ -30,7 +32,7 @@ public class AlphabeticalIndexDeleteServiceTest {
     private ApiClientService apiClientService;
 
     @Mock
-    private ApiProperties apiProperties;
+    private Supplier<InternalApiClient> internalApiClientSupplier;
 
     @Mock
     private InternalApiClient internalApiClient;
@@ -45,33 +47,35 @@ public class AlphabeticalIndexDeleteServiceTest {
     private PrivateAlphabeticalCompanySearchDelete privateAlphabeticalCompanySearchDelete;
 
     @InjectMocks
-    private AlphabeticalIndexDeleteService alphabeticalIndexDeleteService;
+    private AlphabeticalIndexDeleteService underTest;
 
     @BeforeEach
-    void setUp() {
-        when(apiProperties.alphabeticalSearchUri()).thenReturn("/alphabetical-search/companies");
-        when(apiClientService.getInternalApiClient()).thenReturn(internalApiClient);
+    void setUp() throws ApiErrorResponseException, URIValidationException {
+        when(apiClientService.getInternalApiClient()).thenReturn(internalApiClientSupplier);
+        when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
         when(internalApiClient.privateSearchResourceHandler()).thenReturn(privateSearchResourceHandler);
         when(privateSearchResourceHandler.alphabeticalCompanySearch()).thenReturn(privateAlphabeticalCompanySearchHandler);
         when(privateAlphabeticalCompanySearchHandler.delete(anyString())).thenReturn(privateAlphabeticalCompanySearchDelete);
+        when(privateAlphabeticalCompanySearchDelete.execute()).thenReturn(new ApiResponse<>(200, null));
     }
 
     @Test
     void deleteCompanyFromAlphabeticalIndex_SuccessfulDeletion() throws Exception {
         String resourceId = "123456";
-        alphabeticalIndexDeleteService.deleteCompanyFromAlphabeticalIndex(resourceId);
+        underTest.deleteCompany(resourceId);
 
-        verify(logger).info("Deleting " + resourceId + " from Alphabetical index!");
-        verify(apiClientService.getInternalApiClient().privateSearchResourceHandler().alphabeticalCompanySearch(), times(1)).delete("/alphabetical-search/companies/" + resourceId);
+        verify(logger).info("deleteCompany(resourceId=%s) method called.".formatted(resourceId));
+        verify(apiClientService.getInternalApiClient().get().privateSearchResourceHandler().alphabeticalCompanySearch(),
+                times(1)).delete("/alphabetical-search/companies/%s".formatted(resourceId));
     }
 
     @Test
     void deleteCompanyFromAlphabeticalIndex_ExceptionThrown() throws Exception {
         //Simple test to ensure the error is propagated up to the calling service to be handled
         String resourceId = "123456";
-        alphabeticalIndexDeleteService.deleteCompanyFromAlphabeticalIndex(resourceId);
+        underTest.deleteCompany(resourceId);
 
         when(privateAlphabeticalCompanySearchDelete.execute()).thenThrow(ApiErrorResponseException.class);
-        assertThrows(ApiErrorResponseException.class, () -> alphabeticalIndexDeleteService.deleteCompanyFromAlphabeticalIndex(resourceId));
+        assertThrows(ApiErrorResponseException.class, () -> underTest.deleteCompany(resourceId));
     }
 }

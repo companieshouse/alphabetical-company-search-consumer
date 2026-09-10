@@ -33,36 +33,36 @@ public class TestKafkaConfig {
 
     @Bean
     KafkaConsumer<String, ResourceChangedData> testConsumer(
-        @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
+            @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
         KafkaConsumer<String, ResourceChangedData> kafkaConsumer = new KafkaConsumer<>(
-            Map.of(
-                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-                ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest",
-                ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false",
-                ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString()),
-            new StringDeserializer(), new AvroDeserializer<>(ResourceChangedData.class));
+                Map.of(
+                        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
+                        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
+                        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
+                        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest",
+                        ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false",
+                        ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString()),
+                new StringDeserializer(), new AvroDeserializer<>(ResourceChangedData.class));
         kafkaConsumer.subscribe(List.of(MAIN_TOPIC, ERROR_TOPIC, RETRY_TOPIC, INVALID_TOPIC));
         return kafkaConsumer;
     }
 
     @Bean
     KafkaProducer<String, ResourceChangedData> testProducer(
-        @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
+            @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
         return new KafkaProducer<>(
-            Map.of(
-                ProducerConfig.ACKS_CONFIG, "all",
-                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers),
-            new StringSerializer(),
-            (topic, data) -> {
-                try {
-                    return new SerializerFactory()
-                        .getSpecificRecordSerializer(ResourceChangedData.class).toBinary(data);
-                } catch (SerializationException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+                Map.of(
+                        ProducerConfig.ACKS_CONFIG, "all",
+                        ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers),
+                new StringSerializer(),
+                (topic, data) -> {
+                    try {
+                        return new SerializerFactory()
+                                .getSpecificRecordSerializer(ResourceChangedData.class).toBinary(data);
+                    } catch (SerializationException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
 }

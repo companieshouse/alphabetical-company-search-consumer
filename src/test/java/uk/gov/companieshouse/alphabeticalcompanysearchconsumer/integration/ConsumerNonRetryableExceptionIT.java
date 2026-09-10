@@ -22,13 +22,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestApplicationConfig;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestServiceConfig;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_nonretryable")
-@Import(TestServiceConfig.class)
+@Import({TestApplicationConfig.class, TestServiceConfig.class})
 class ConsumerNonRetryableExceptionIT extends AbstractKafkaIntegrationTest {
 
     @Autowired
