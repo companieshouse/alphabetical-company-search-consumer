@@ -2,7 +2,6 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import consumer.exception.RetryableErrorException;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 
 @Component
 public class RetryableExceptionService implements Service {

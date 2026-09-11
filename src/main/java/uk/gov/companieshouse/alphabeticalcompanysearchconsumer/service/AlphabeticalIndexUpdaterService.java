@@ -6,7 +6,6 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.logging.Lo
 import consumer.exception.NonRetryableErrorException;
 import consumer.exception.RetryableErrorException;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.logging.Logger;
 
