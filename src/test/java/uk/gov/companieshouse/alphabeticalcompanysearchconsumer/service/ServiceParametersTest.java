@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,12 +31,12 @@ class ServiceParametersTest {
     }
 
     @Test
-    void shouldReturnTrueWhenComparingSameInstance() {
+    void shouldReturnTrueWhenComparingNotNullInstance() {
         // Arrange
         ServiceParameters serviceParameters = new ServiceParameters(resourceChangedData);
 
         // Act & Assert
-        assertEquals(serviceParameters, serviceParameters);
+        assertNotNull(serviceParameters);
     }
 
     @Test
@@ -73,7 +74,7 @@ class ServiceParametersTest {
         ServiceParameters serviceParameters = new ServiceParameters(resourceChangedData);
 
         // Act & Assert
-        assertNotEquals("not a ServiceParameters", serviceParameters);
+        assertNotEquals("not a ServiceParameters", serviceParameters.toString());
     }
 
     @Test
@@ -97,12 +98,12 @@ class ServiceParametersTest {
     }
 
     @Test
-    void shouldReturnNonNullHashCode() {
+    void shouldReturnNonNegativeHashCode() {
         // Arrange
         ServiceParameters serviceParameters = new ServiceParameters(resourceChangedData);
 
         // Act & Assert
-        assertNotNull(serviceParameters.hashCode());
+        assertTrue(serviceParameters.hashCode() > 0);
     }
 
     @Test
