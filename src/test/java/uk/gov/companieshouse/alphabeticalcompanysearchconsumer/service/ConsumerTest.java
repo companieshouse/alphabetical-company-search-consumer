@@ -77,10 +77,10 @@ class ConsumerTest {
         assertThrows(NonRetryableErrorException.class, () -> consumer.consume(message));
 
         verify(logger).errorContext(
-                eq(CONTEXT_ID),
-                eq("Exception occurred while processing message"),
-                eq(exception),
-                eq(DataMapHolder.getLogMap())
+                CONTEXT_ID,
+                "Exception occurred while processing message",
+                exception,
+                DataMapHolder.getLogMap()
         );
     }
 
@@ -98,10 +98,10 @@ class ConsumerTest {
         assertThrows(RuntimeException.class, () -> consumer.consume(message));
 
         verify(logger).errorContext(
-                eq(CONTEXT_ID),
-                eq("Exception occurred while processing message"),
-                eq(exception),
-                eq(DataMapHolder.getLogMap())
+                CONTEXT_ID,
+                "Exception occurred while processing message",
+                exception,
+                DataMapHolder.getLogMap()
         );
     }
 

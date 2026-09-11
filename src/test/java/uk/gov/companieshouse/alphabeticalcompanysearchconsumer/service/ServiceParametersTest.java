@@ -1,16 +1,15 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.stream.ResourceChangedData;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class ServiceParametersTest {
@@ -36,7 +35,7 @@ class ServiceParametersTest {
         ServiceParameters serviceParameters = new ServiceParameters(resourceChangedData);
 
         // Act & Assert
-        assertTrue(serviceParameters.equals(serviceParameters));
+        assertEquals(serviceParameters, serviceParameters);
     }
 
     @Test
@@ -46,7 +45,7 @@ class ServiceParametersTest {
         ServiceParameters otherServiceParameters = new ServiceParameters(resourceChangedData);
 
         // Act & Assert
-        assertTrue(serviceParameters.equals(otherServiceParameters));
+        assertEquals(serviceParameters, otherServiceParameters);
     }
 
     @Test
@@ -56,7 +55,7 @@ class ServiceParametersTest {
         ServiceParameters otherServiceParameters = new ServiceParameters(otherResourceChangedData);
 
         // Act & Assert
-        assertFalse(serviceParameters.equals(otherServiceParameters));
+        assertNotEquals(serviceParameters, otherServiceParameters);
     }
 
     @Test
@@ -65,7 +64,7 @@ class ServiceParametersTest {
         ServiceParameters serviceParameters = new ServiceParameters(resourceChangedData);
 
         // Act & Assert
-        assertFalse(serviceParameters.equals(null));
+        assertNotEquals(null, serviceParameters);
     }
 
     @Test
@@ -74,7 +73,7 @@ class ServiceParametersTest {
         ServiceParameters serviceParameters = new ServiceParameters(resourceChangedData);
 
         // Act & Assert
-        assertFalse(serviceParameters.equals("not a ServiceParameters"));
+        assertNotEquals("not a ServiceParameters", serviceParameters);
     }
 
     @Test
@@ -112,7 +111,7 @@ class ServiceParametersTest {
         ServiceParameters serviceParameters = new ServiceParameters(null);
 
         // Act & Assert
-        assertEquals(null, serviceParameters.getData());
+        assertNull(serviceParameters.getData());
     }
 
     @Test
@@ -122,7 +121,7 @@ class ServiceParametersTest {
         ServiceParameters otherServiceParameters = new ServiceParameters(null);
 
         // Act & Assert
-        assertTrue(serviceParameters.equals(otherServiceParameters));
+        assertEquals(serviceParameters, otherServiceParameters);
     }
 
     @Test
@@ -132,6 +131,6 @@ class ServiceParametersTest {
         ServiceParameters otherServiceParameters = new ServiceParameters(resourceChangedData);
 
         // Act & Assert
-        assertFalse(serviceParameters.equals(otherServiceParameters));
+        assertNotEquals(serviceParameters, otherServiceParameters);
     }
 }

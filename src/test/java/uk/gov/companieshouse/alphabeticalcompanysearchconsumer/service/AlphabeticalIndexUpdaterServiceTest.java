@@ -30,7 +30,6 @@ class AlphabeticalIndexUpdaterServiceTest {
     private static final String RESOURCE_ID = "12345678";
     private static final String RESOURCE_KIND = "company-profile";
     private static final String RESOURCE_URI = "/company/12345678";
-    private static final String CONTEXT_ID = "ctx-001";
 
     @Mock
     private Logger logger;
@@ -103,9 +102,7 @@ class AlphabeticalIndexUpdaterServiceTest {
         assertThrows(NonRetryableErrorException.class,
                 () -> service.processMessage(serviceParameters));
 
-        verify(logger).error(
-                "NonRetryable error occurred, unknown message type of unknown"
-                        .formatted());
+        verify(logger).error("NonRetryable error occurred, unknown message type of unknown");
     }
 
     @Test
