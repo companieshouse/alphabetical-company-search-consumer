@@ -27,7 +27,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <spring-boot-dependencies.version>4.1.0</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>4.2.0-M1</spring-boot-dependencies.version>
         <spring-boot-starter-aop.version>4.0.0-M2</spring-boot-starter-aop.version>
 
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
@@ -37,7 +37,7 @@
         <build-helper-maven-plugin>3.6.0</build-helper-maven-plugin>
 
         <!-- Internal Dependencies -->
-        <ch-boms.version>0.1.17</ch-boms.version>
+        <ch-boms.version>0.1.21</ch-boms.version>
 
         <!-- 3rd Party dependencies -->
         <system-lambda.version>1.2.1</system-lambda.version>

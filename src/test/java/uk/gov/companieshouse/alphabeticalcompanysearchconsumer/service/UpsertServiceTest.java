@@ -1,23 +1,24 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpResponseException;
 import java.util.Map;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.ApiProperties;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.mapper.CompanyProfileMapper;
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
@@ -41,7 +42,10 @@ class UpsertServiceTest {
     private ApiClientService apiClientService;
 
     @Mock
-    private ApiProperties apiProperties;
+    private CompanyProfileMapper companyProfileMapper;
+
+    @Mock
+    private Supplier<InternalApiClient> internalApiClientSupplier;
 
     @Mock
     private InternalApiClient internalApiClient;
@@ -59,19 +63,16 @@ class UpsertServiceTest {
     private PrivateAlphabeticalCompanySearchUpsert privateAlphabeticalCompanySearchUpsert;
 
     @Mock
-    private ResponseHandler responseHandler;
-
-    @Mock
     private CompanyProfileApi companyProfileApi;
 
-    private UpsertService underTest;
+    @InjectMocks
+    private AlphabeticalIndexUpsertService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new UpsertService(apiClientService, logger, apiProperties);
-
-        when(apiProperties.alphabeticalSearchUri()).thenReturn("/alphabetical-search/companies");
-        when(apiClientService.getInternalApiClient()).thenReturn(internalApiClient);
+        when(companyProfileMapper.mapToCompanyProfile(anyString())).thenReturn(companyProfileApi);
+        when(apiClientService.getInternalApiClient()).thenReturn(internalApiClientSupplier);
+        when(internalApiClientSupplier.get()).thenReturn(internalApiClient);
         when(internalApiClient.privateSearchResourceHandler()).thenReturn(privateSearchResourceHandler);
         when(privateSearchResourceHandler.alphabeticalCompanySearch()).thenReturn(privateAlphabeticalCompanySearchHandler);
     }
@@ -88,12 +89,11 @@ class UpsertServiceTest {
                 new ApiResponse<>(200, Map.of()));
 
         // when
-        underTest.upsertService(parameters);
+        underTest.upsertCompany(parameters);
 
         // then
         verify(privateAlphabeticalCompanySearchHandler).put(
                 eq("/alphabetical-search/companies/" + companyNumber), any(CompanyProfileApi.class));
-        verifyNoInteractions(responseHandler);
     }
 
     @Test
@@ -110,7 +110,7 @@ class UpsertServiceTest {
         when(privateAlphabeticalCompanySearchUpsert.execute()).thenThrow(apiErrorResponseException);
         try {
             // when
-            underTest.upsertService(parameters);
+            underTest.upsertCompany(parameters);
 
         } catch (ApiErrorResponseException e) {
 
@@ -118,7 +118,6 @@ class UpsertServiceTest {
             verify(privateAlphabeticalCompanySearchHandler).put(
                     eq("/alphabetical-search/companies/" + companyNumber), any(CompanyProfileApi.class));
 
-            verifyNoInteractions(responseHandler);
         }
     }
 }

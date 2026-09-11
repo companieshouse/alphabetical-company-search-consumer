@@ -1,6 +1,4 @@
-package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util;
-
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service.Service;
+package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
 import java.util.Objects;
 import uk.gov.companieshouse.stream.ResourceChangedData;

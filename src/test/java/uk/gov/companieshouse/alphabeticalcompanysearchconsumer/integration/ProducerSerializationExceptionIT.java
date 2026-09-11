@@ -2,8 +2,6 @@ package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestConstants.UPDATE;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.ERROR_TOPIC;
@@ -12,6 +10,7 @@ import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.Test
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.RETRY_TOPIC;
 import static uk.gov.companieshouse.alphabeticalcompanysearchconsumer.utils.TestUtils.noOfRecordsForTopic;
 
+import consumer.exception.NonRetryableErrorException;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -31,14 +30,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestApplicationConfig;
 import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.config.TestServiceConfig;
-import uk.gov.companieshouse.kafka.exceptions.SerializationException;
-import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
+import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.serialization.ResourceChangedDataSerializer;
 import uk.gov.companieshouse.stream.ResourceChangedData;
 
 @SpringBootTest
 @ActiveProfiles("test_main_nonretryable")
-@Import(TestServiceConfig.class)
+@Import({TestApplicationConfig.class, TestServiceConfig.class})
 class ProducerSerializationExceptionIT extends AbstractKafkaIntegrationTest {
 
     @TestConfiguration
@@ -46,8 +45,8 @@ class ProducerSerializationExceptionIT extends AbstractKafkaIntegrationTest {
 
         @Bean
         @Primary
-        public AvroSerializer<ResourceChangedData> serializer() {
-            return Mockito.mock(AvroSerializer.class);
+        public ResourceChangedDataSerializer serializer() {
+            return Mockito.mock(ResourceChangedDataSerializer.class);
         }
 
     }
@@ -62,7 +61,7 @@ class ProducerSerializationExceptionIT extends AbstractKafkaIntegrationTest {
     private CountDownLatch latch;
 
     @Autowired
-    private AvroSerializer<ResourceChangedData> serializer;
+    private ResourceChangedDataSerializer serializer;
 
     @BeforeEach
     public void drainKafkaTopics() {
@@ -71,17 +70,16 @@ class ProducerSerializationExceptionIT extends AbstractKafkaIntegrationTest {
 
     @Test
     @DisplayName("SerializationException producing message to DLT causes looping")
-    void testPublishToInvalidMessageTopicSerializationException()
-        throws InterruptedException, SerializationException {
+    void testPublishToInvalidMessageTopicSerializationException() throws InterruptedException {
 
         // given
         // Here we only throw the exception twice to allow the test to complete in much less time.
         // In reality, if such an exception occurred once trying to serialize the message to be
         // produced, it would presumably occur on every serialization/production attempt.
-        when(serializer.toBinary(UPDATE))
-            .thenThrow(new SerializationException("Test exception 1."))
-            .thenThrow(new SerializationException("Test exception 2."))
-            .thenReturn(null);
+        when(serializer.serialize(MAIN_TOPIC, UPDATE))
+                .thenThrow(NonRetryableErrorException.class)
+                .thenThrow(NonRetryableErrorException.class)
+                .thenReturn(null);
 
         ProducerRecord<String, ResourceChangedData> producerRecord = new ProducerRecord<>(MAIN_TOPIC, 0,
                 System.currentTimeMillis(), "key", UPDATE);
@@ -101,7 +99,5 @@ class ProducerSerializationExceptionIT extends AbstractKafkaIntegrationTest {
         assertThat(noOfRecordsForTopic(consumerRecords, RETRY_TOPIC)).isZero();
         assertThat(noOfRecordsForTopic(consumerRecords, ERROR_TOPIC)).isZero();
         assertThat(noOfRecordsForTopic(consumerRecords, INVALID_TOPIC)).isEqualTo(1);
-
-        verify(serializer, times(3)).toBinary(UPDATE);
     }
 }

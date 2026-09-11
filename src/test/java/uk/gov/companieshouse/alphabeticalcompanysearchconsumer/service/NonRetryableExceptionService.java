@@ -1,15 +1,14 @@
 package uk.gov.companieshouse.alphabeticalcompanysearchconsumer.service;
 
+import consumer.exception.NonRetryableErrorException;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.exception.NonRetryableException;
-import uk.gov.companieshouse.alphabeticalcompanysearchconsumer.util.ServiceParameters;
 
 @Component
 public class NonRetryableExceptionService implements Service {
 
     @Override
     public void processMessage(ServiceParameters parameters) {
-        throw new NonRetryableException("Unable to handle message",
+        throw new NonRetryableErrorException("NonRetryableExceptionService to throw NonRetryableException.class",
             new Exception("Unable to handle message"));
     }
 }
