@@ -31,12 +31,13 @@ class ServiceParametersTest {
     }
 
     @Test
-    void shouldReturnTrueWhenComparingNotNullInstance() {
+    void shouldReturnTrueWhenComparingSameInstanceValues() {
         // Arrange
         ServiceParameters serviceParameters = new ServiceParameters(resourceChangedData);
+        ServiceParameters otherServiceParameters = new ServiceParameters(serviceParameters.getData());
 
         // Act & Assert
-        assertNotNull(serviceParameters);
+        assertEquals(serviceParameters, otherServiceParameters);
     }
 
     @Test
