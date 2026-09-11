@@ -60,7 +60,7 @@ public class AlphabeticalIndexDeleteServiceTest {
     }
 
     @Test
-    void deleteCompanyFromAlphabeticalIndex_SuccessfulDeletion() throws Exception {
+    void deleteCompanyFromAlphabeticalIndexSuccessfulDeletion() throws Exception {
         String resourceId = "123456";
         underTest.deleteCompany(resourceId);
 
@@ -70,7 +70,7 @@ public class AlphabeticalIndexDeleteServiceTest {
     }
 
     @Test
-    void deleteCompanyFromAlphabeticalIndex_ExceptionThrown() throws Exception {
+    void deleteCompanyFromAlphabeticalIndexExceptionThrown() throws Exception {
         //Simple test to ensure the error is propagated up to the calling service to be handled
         String resourceId = "123456";
         underTest.deleteCompany(resourceId);
