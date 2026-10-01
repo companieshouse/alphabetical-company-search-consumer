@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
@@ -27,8 +28,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <spring-boot-dependencies.version>4.2.0-M1</spring-boot-dependencies.version>
-        <spring-boot-starter-aop.version>4.0.0-M2</spring-boot-starter-aop.version>
+        <spring-boot-dependencies.version>4.1.1</spring-boot-dependencies.version>
 
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
@@ -37,7 +37,7 @@
         <build-helper-maven-plugin>3.6.0</build-helper-maven-plugin>
 
         <!-- Internal Dependencies -->
-        <ch-boms.version>0.1.21</ch-boms.version>
+        <ch-boms.version>0.1.27</ch-boms.version>
 
         <!-- 3rd Party dependencies -->
         <system-lambda.version>1.2.1</system-lambda.version>
@@ -113,8 +113,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-            <version>${spring-boot-starter-aop.version}</version>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
 
         <dependency>
@@ -202,8 +201,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka-test</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-kafka-test</artifactId>
             <scope>test</scope>
         </dependency>
 
